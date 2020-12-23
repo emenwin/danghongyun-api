@@ -143,6 +143,9 @@ func (r Client) DoRequestWithJSON(ctx context.Context, method, reqURL string, he
 		return
 	}
 
+	if DebugMode {
+		log.Println("reqBody:\n", string(reqBody))
+	}
 	if headers == nil {
 		headers = http.Header{}
 	}

@@ -46,7 +46,7 @@ func (m *DHLiveManager) TemplateCreate(parma TemplateReqParam) (*TemplateRespPar
 
 	parma.AccessKey = m.Credentials.AccessKey
 	parma.Version = Version
-	//parma.Action
+	parma.Action = "liveTemplateCreate"
 	timestamp, signature := m.Credentials.Sign2(parma.Action, Version)
 	parma.Timestamp = timestamp
 	parma.Signature = signature

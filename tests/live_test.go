@@ -10,8 +10,17 @@ import (
 
 func TestCreatTemplate(t *testing.T) {
 
-	accessKey := "a020e193-0f1"
+	accessKey := "275ee3cd-6fb"
 	accessSecret := "5GcXHNYdAVVdFW0yervG"
+
+	if TestAccessKey != "" {
+		accessKey = TestAccessKey
+		accessSecret = TestSecretKey
+	}
+
+	fmt.Println(accessKey)
+	fmt.Println(accessSecret)
+
 	cred := auth.New(accessKey, accessSecret)
 
 	livemanager := live.NewLiveManager(cred)

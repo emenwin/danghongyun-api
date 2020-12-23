@@ -25,7 +25,7 @@ type TemplateRespParam struct {
 }
 
 //MarshalJSON json序列化
-func (a *TemplateReqParam) MarshalJSON() ([]byte, error) {
+func (a TemplateReqParam) MarshalJSON() ([]byte, error) {
 
 	b := struct {
 		AccessKey string `json:"accessKey"` //用户访问key

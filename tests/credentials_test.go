@@ -24,5 +24,10 @@ func TestSign(t *testing.T) {
 		t.Errorf("Sign error \nnow:(%s) \nshould:(%s)", sign, result)
 	}
 
+	fmt.Println(accessKey)
+	fmt.Println(accessSecret)
+	fmt.Println(action)
+	fmt.Println(timestamp)
+	fmt.Println(version)
 	fmt.Println(sign)
 }
