@@ -6,15 +6,20 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptrace"
 	"net/http/httputil"
 	"net/url"
 	"strings"
 
-	"github.com/qiniu/api.v7/v7/auth"
-	"github.com/qiniu/api.v7/v7/internal/log"
+	"log"
 )
+
+func init() {
+	log.SetPrefix("TRACE: ")
+	log.SetFlags(log.Ldate | log.Lmicroseconds | log.Llongfile)
+}
 
 //UserAgent agent
 var UserAgent = "Golang danghongyun/client package"
@@ -23,10 +28,10 @@ var UserAgent = "Golang danghongyun/client package"
 var DefaultClient = Client{&http.Client{Transport: http.DefaultTransport}}
 
 // DebugMode 用来打印调试信息
-var DebugMode = false
+var DebugMode = true
 
 // DeepDebugInfo 深度打印
-var DeepDebugInfo = false
+var DeepDebugInfo = true
 
 // --------------------------------------------------------------------
 
@@ -42,8 +47,8 @@ func TurnOnDebug() {
 
 // --------------------------------------------------------------------
 
-func newRequest(ctx context.Context, method, reqUrl string, headers http.Header, body io.Reader) (req *http.Request, err error) {
-	req, err = http.NewRequest(method, reqUrl, body)
+func newRequest(ctx context.Context, method, reqURL string, headers http.Header, body io.Reader) (req *http.Request, err error) {
+	req, err = http.NewRequest(method, reqURL, body)
 	if err != nil {
 		return
 	}
@@ -55,35 +60,28 @@ func newRequest(ctx context.Context, method, reqUrl string, headers http.Header,
 	req.Header = headers
 	req = req.WithContext(ctx)
 
-	//check access token
-	mac, t, ok := auth.CredentialsFromContext(ctx)
-	if ok {
-		err = mac.AddToken(t, req)
-		if err != nil {
-			return
-		}
-	}
 	if DebugMode {
 		trace := &httptrace.ClientTrace{
 			GotConn: func(connInfo httptrace.GotConnInfo) {
 				remoteAddr := connInfo.Conn.RemoteAddr()
-				log.Debug(fmt.Sprintf("Network: %s, Remote ip:%s, URL: %s", remoteAddr.Network(), remoteAddr.String(), req.URL))
+				log.Println(fmt.Sprintf("Network: %s, Remote ip:%s, URL: %s", remoteAddr.Network(), remoteAddr.String(), req.URL))
 			},
 		}
 		req = req.WithContext(httptrace.WithClientTrace(req.Context(), trace))
 		bs, bErr := httputil.DumpRequest(req, DeepDebugInfo)
 		if bErr != nil {
 			err = bErr
+
 			return
 		}
-		log.Debug(string(bs))
+		log.Println(string(bs))
 	}
 	return
 }
 
 // DoRequest do request
-func (r Client) DoRequest(ctx context.Context, method, reqUrl string, headers http.Header) (resp *http.Response, err error) {
-	req, err := newRequest(ctx, method, reqUrl, headers, nil)
+func (r Client) DoRequest(ctx context.Context, method, reqURL string, headers http.Header) (resp *http.Response, err error) {
+	req, err := newRequest(ctx, method, reqURL, headers, nil)
 	if err != nil {
 		return
 	}
@@ -91,10 +89,10 @@ func (r Client) DoRequest(ctx context.Context, method, reqUrl string, headers ht
 }
 
 //DoRequestWith request
-func (r Client) DoRequestWith(ctx context.Context, method, reqUrl string, headers http.Header, body io.Reader,
+func (r Client) DoRequestWith(ctx context.Context, method, reqURL string, headers http.Header, body io.Reader,
 	bodyLength int) (resp *http.Response, err error) {
 
-	req, err := newRequest(ctx, method, reqUrl, headers, body)
+	req, err := newRequest(ctx, method, reqURL, headers, body)
 	if err != nil {
 		return
 	}
@@ -103,10 +101,10 @@ func (r Client) DoRequestWith(ctx context.Context, method, reqUrl string, header
 }
 
 //DoRequestWith64 request
-func (r Client) DoRequestWith64(ctx context.Context, method, reqUrl string, headers http.Header, body io.Reader,
+func (r Client) DoRequestWith64(ctx context.Context, method, reqURL string, headers http.Header, body io.Reader,
 	bodyLength int64) (resp *http.Response, err error) {
 
-	req, err := newRequest(ctx, method, reqUrl, headers, body)
+	req, err := newRequest(ctx, method, reqURL, headers, body)
 	if err != nil {
 		return
 	}
@@ -115,7 +113,7 @@ func (r Client) DoRequestWith64(ctx context.Context, method, reqUrl string, head
 }
 
 // DoRequestWithForm request
-func (r Client) DoRequestWithForm(ctx context.Context, method, reqUrl string, headers http.Header,
+func (r Client) DoRequestWithForm(ctx context.Context, method, reqURL string, headers http.Header,
 	data map[string][]string) (resp *http.Response, err error) {
 
 	if headers == nil {
@@ -125,19 +123,19 @@ func (r Client) DoRequestWithForm(ctx context.Context, method, reqUrl string, he
 
 	requestData := url.Values(data).Encode()
 	if method == "GET" || method == "HEAD" || method == "DELETE" {
-		if strings.ContainsRune(reqUrl, '?') {
-			reqUrl += "&"
+		if strings.ContainsRune(reqURL, '?') {
+			reqURL += "&"
 		} else {
-			reqUrl += "?"
+			reqURL += "?"
 		}
-		return r.DoRequest(ctx, method, reqUrl+requestData, headers)
+		return r.DoRequest(ctx, method, reqURL+requestData, headers)
 	}
 
-	return r.DoRequestWith(ctx, method, reqUrl, headers, strings.NewReader(requestData), len(requestData))
+	return r.DoRequestWith(ctx, method, reqURL, headers, strings.NewReader(requestData), len(requestData))
 }
 
-// DoRequestWithJson request
-func (r Client) DoRequestWithJson(ctx context.Context, method, reqUrl string, headers http.Header,
+// DoRequestWithJSON request
+func (r Client) DoRequestWithJSON(ctx context.Context, method, reqURL string, headers http.Header,
 	data interface{}) (resp *http.Response, err error) {
 
 	reqBody, err := json.Marshal(data)
@@ -149,12 +147,11 @@ func (r Client) DoRequestWithJson(ctx context.Context, method, reqUrl string, he
 		headers = http.Header{}
 	}
 	headers.Add("Content-Type", "application/json")
-	return r.DoRequestWith(ctx, method, reqUrl, headers, bytes.NewReader(reqBody), len(reqBody))
+	return r.DoRequestWith(ctx, method, reqURL, headers, bytes.NewReader(reqBody), len(reqBody))
 }
 
 //Do do
 func (r Client) Do(ctx context.Context, req *http.Request) (resp *http.Response, err error) {
-	reqctx := req.Context()
 
 	if _, ok := req.Header["User-Agent"]; !ok {
 		req.Header.Set("User-Agent", UserAgent)
@@ -168,10 +165,12 @@ func (r Client) Do(ctx context.Context, req *http.Request) (resp *http.Response,
 
 //ErrorInfo errorinfo
 type ErrorInfo struct {
-	Err   string `json:"error,omitempty"`
-	Key   string `json:"key,omitempty"`
-	Errno int    `json:"errno,omitempty"`
-	Code  int    `json:"code"`
+	HTTPCode int    `json:"http_code"` //http code
+	Code     int    `json:"code"`      // 整型错误码，0成功，其它值失败
+	Message  string `json:"message"`   // 字符串，可能包含错误或者别的一些信息
+	Result   string `json:"result"`    // 字符串，返回的结果
+	Success  bool   `json:"success"`   // true 或 false
+
 }
 
 //ErrorDetail error
@@ -184,5 +183,58 @@ func (r *ErrorInfo) ErrorDetail() string {
 //Error error
 func (r *ErrorInfo) Error() string {
 
-	return r.Err
+	return r.Message
+}
+
+//ResponseError 返回错误
+func ResponseError(resp *http.Response) (err error) {
+
+	e := &ErrorInfo{
+		HTTPCode: resp.StatusCode,
+		Success:  false,
+	}
+
+	return e
+}
+
+//CallWithJSON api call
+func (r Client) CallWithJSON(ctx context.Context, ret interface{}, method, reqUrl string, headers http.Header,
+	param interface{}) (err error) {
+
+	resp, err := r.DoRequestWithJSON(ctx, method, reqUrl, headers, param)
+	if err != nil {
+		return err
+	}
+	return CallRet(ctx, ret, resp)
+}
+
+//CallRet 返回对象转换
+func CallRet(ctx context.Context, ret interface{}, resp *http.Response) (err error) {
+
+	defer func() {
+		io.Copy(ioutil.Discard, resp.Body)
+		resp.Body.Close()
+	}()
+
+	if DebugMode {
+		bs, dErr := httputil.DumpResponse(resp, DeepDebugInfo)
+		if dErr != nil {
+			err = dErr
+			log.Println(dErr.Error())
+
+			return
+		}
+		log.Println(string(bs))
+	}
+
+	if resp.StatusCode/100 == 2 {
+		if ret != nil && resp.ContentLength != 0 {
+			err = json.NewDecoder(resp.Body).Decode(ret)
+			if err != nil {
+				return
+			}
+		}
+		return nil
+	}
+	return ResponseError(resp)
 }

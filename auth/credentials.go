@@ -4,8 +4,11 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
+	"strconv"
 
 	"fmt"
+
+	"github.com/emenwin/danghongyun-api/utils"
 )
 
 // Credentials 鉴权类，用于生成请求签名签名
@@ -29,6 +32,18 @@ func New(accessKey, secretKey string) *Credentials {
 func (ath *Credentials) Sign(action string, version string, timestamp int64) (signature string) {
 	h := hmac.New(sha256.New, []byte(ath.SecretKey))
 	data := fmt.Sprintf("%saccessKey=%saction=%stimestamp=%dversion=%s", ath.SecretKey, ath.AccessKey, action, timestamp, version)
+	h.Write([]byte(data))
+	signature = hex.EncodeToString(h.Sum(nil))
+
+	return
+}
+
+//Sign2 sign
+func (ath *Credentials) Sign2(action string, version string) (timestamp, signature string) {
+	h := hmac.New(sha256.New, []byte(ath.SecretKey))
+	now := utils.NowMillis()
+	timestamp = strconv.FormatInt(now, 10)
+	data := fmt.Sprintf("%saccessKey=%saction=%stimestamp=%sversion=%s", ath.SecretKey, ath.AccessKey, action, timestamp, version)
 	h.Write([]byte(data))
 	signature = hex.EncodeToString(h.Sum(nil))
 
