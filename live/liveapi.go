@@ -7,7 +7,6 @@ import (
 
 	"github.com/emenwin/danghongyun-api/auth"
 	"github.com/emenwin/danghongyun-api/client"
-	"github.com/emenwin/danghongyun-api/utils"
 )
 
 const (
@@ -44,16 +43,17 @@ func NewLiveManagerEx(cred *auth.Credentials, clt *client.Client) *DHLiveManager
 
 // TemplateCreate 用来修改文件状态, 禁用和启用文件的可访问性
 // http://api.danghongyun.com/rest
-func (m *DHLiveManager) TemplateCreate(parma Template) (*TemplateRespParam, error) {
+func (m *DHLiveManager) TemplateCreate(template Template) (*TemplateRespParam, error) {
 
-	parma.Type = "1"
-	action := "liveTemplateCreate"
-	queryparam, _ := m.Credentials.Sign2(action, Version, utils.NowMillisStr())
+	template.Type = "1"
 
+	params := m.Credentials.NewSignParams("liveTemplateCreate", Version, "")
+	queryparam, _ := m.Credentials.SignExt(params)
 	url := LiveRestAPIURL + "?" + queryparam
+
 	var respTempalte TemplateRespParam
 	err := m.Client.CallWithJSON(context.Background(),
-		&respTempalte, "POST", url, nil, parma)
+		&respTempalte, "POST", url, nil, template)
 
 	if nil != err {
 		return nil, err
