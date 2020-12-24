@@ -39,7 +39,7 @@ func (ath *Credentials) Sign(action string, version string, timestamp int64) (si
 }
 
 //Sign2 sign
-func (ath *Credentials) Sign2(action string, version string) (timestamp, signature string) {
+func (ath *Credentials) Sign2(action string, version string) (queryparams, timestamp, signature string) {
 	h := hmac.New(sha256.New, []byte(ath.SecretKey))
 	now := utils.NowMillis()
 	timestamp = strconv.FormatInt(now, 10)
@@ -47,6 +47,12 @@ func (ath *Credentials) Sign2(action string, version string) (timestamp, signatu
 	h.Write([]byte(data))
 	signature = hex.EncodeToString(h.Sum(nil))
 
+	queryparams = fmt.Sprintf("accessKey=%s&action=%s&version=%s&timestamp=%s&signature=%s",
+		ath.AccessKey,
+		action,
+		version,
+		timestamp,
+		signature)
 	return
 }
 

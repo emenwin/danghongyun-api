@@ -1,20 +1,5 @@
 package live
 
-import (
-	"encoding/json"
-)
-
-//TemplateReqParam 直播模板请求参数
-type TemplateReqParam struct {
-	AccessKey string `json:"accessKey"` //用户访问key
-	Action    string `json:"action"`    //api名称，此接口为 liveTemplateCreate
-	Version   string `json:"version"`   //api版本，目前必须为 2.0
-	Timestamp string `json:"timestamp"` //api调用时间戳，1970年1月1日以来的毫秒数，如1466488681033
-	Signature string `json:"signature"` //签名
-
-	Template *Template
-}
-
 //TemplateRespParam 直播模板响应参数
 type TemplateRespParam struct {
 	Code    int      `json:"code"`    // 整型错误码，0成功，其它值失败
@@ -24,53 +9,12 @@ type TemplateRespParam struct {
 
 }
 
-//MarshalJSON json序列化
-func (a TemplateReqParam) MarshalJSON() ([]byte, error) {
-
-	b := struct {
-		AccessKey string `json:"accessKey"` //用户访问key
-		Action    string `json:"action"`    //api名称，此接口为 liveTemplateCreate
-		Version   string `json:"version"`   //api版本，目前必须为 2.0
-		Timestamp string `json:"timestamp"` //api调用时间戳，1970年1月1日以来的毫秒数，如1466488681033
-		Signature string `json:"signature"` //签名
-
-		DisplayName       string `json:"displayName"`
-		Type              int    `json:"type"`
-		TranscodeType     int    `json:"transcodeType"`
-		VideoWidth        int    `json:"videoWidth"`
-		VideoHeight       int    `json:"videoHeight"`
-		VideoBitrate      int    `json:"videoBitrate"`
-		AudioBitrate      int    `json:"audioBitrate"`
-		FrameRate         int    `json:"frameRate"`
-		AdvancedArguments string `json:"advancedArguments"`
-	}{
-		AccessKey: a.AccessKey,
-		Action:    a.Action,
-		Version:   a.Version,
-		Timestamp: a.Timestamp,
-		Signature: a.Signature,
-	}
-
-	if nil != a.Template {
-		b.DisplayName = a.Template.DisplayName
-		b.Type = a.Template.Type
-		b.TranscodeType = a.Template.TranscodeType
-		b.VideoWidth = a.Template.VideoWidth
-		b.VideoHeight = a.Template.VideoHeight
-		b.VideoBitrate = a.Template.VideoBitrate
-		b.AudioBitrate = a.Template.AudioBitrate
-		b.FrameRate = a.Template.FrameRate
-
-		if nil != a.Template.AdvancedArgumentsObj {
-			obj, err := json.Marshal(a.Template.AdvancedArgumentsObj)
-			if nil == err {
-				b.AdvancedArguments = string(obj)
-
-			}
-		}
-	}
-
-	return json.Marshal(b)
+//TemplateListRespParam 直播模板查询列表返回参数
+type TemplateListRespParam struct {
+	Code    int        `json:"code"`    // 整型错误码，0成功，其它值失败
+	Message string     `json:"message"` // 字符串，可能包含错误或者别的一些信息
+	Success bool       `json:"success"` // true 或 false
+	Result  []Template `json:"result"`  // 字符串，返回的结果
 
 }
 
@@ -109,3 +53,64 @@ type TemplateAdvancedArguments struct {
 	SmartBorder  string      `json:"smartBorder"`  //smartBorder: 宽高变换模式：0-线性拉伸 1-智能黑边 2-自动裁剪
 
 }
+
+// //TemplateReqParam 直播模板请求参数
+// type TemplateReqParam struct {
+// 	AccessKey string `json:"accessKey"` //用户访问key
+// 	Action    string `json:"action"`    //api名称，此接口为 liveTemplateCreate
+// 	Version   string `json:"version"`   //api版本，目前必须为 2.0
+// 	Timestamp string `json:"timestamp"` //api调用时间戳，1970年1月1日以来的毫秒数，如1466488681033
+// 	Signature string `json:"signature"` //签名
+
+// 	Template *Template
+// }
+
+// //MarshalJSON json序列化
+// func (a TemplateReqParam) MarshalJSON() ([]byte, error) {
+
+// 	b := struct {
+// 		AccessKey string `json:"accessKey"` //用户访问key
+// 		Action    string `json:"action"`    //api名称，此接口为 liveTemplateCreate
+// 		Version   string `json:"version"`   //api版本，目前必须为 2.0
+// 		Timestamp string `json:"timestamp"` //api调用时间戳，1970年1月1日以来的毫秒数，如1466488681033
+// 		Signature string `json:"signature"` //签名
+
+// 		DisplayName       string `json:"displayName"`
+// 		Type              int    `json:"type"`
+// 		TranscodeType     int    `json:"transcodeType"`
+// 		VideoWidth        int    `json:"videoWidth"`
+// 		VideoHeight       int    `json:"videoHeight"`
+// 		VideoBitrate      int    `json:"videoBitrate"`
+// 		AudioBitrate      int    `json:"audioBitrate"`
+// 		FrameRate         int    `json:"frameRate"`
+// 		AdvancedArguments string `json:"advancedArguments"`
+// 	}{
+// 		AccessKey: a.AccessKey,
+// 		Action:    a.Action,
+// 		Version:   a.Version,
+// 		Timestamp: a.Timestamp,
+// 		Signature: a.Signature,
+// 	}
+
+// 	if nil != a.Template {
+// 		b.DisplayName = a.Template.DisplayName
+// 		b.Type = a.Template.Type
+// 		b.TranscodeType = a.Template.TranscodeType
+// 		b.VideoWidth = a.Template.VideoWidth
+// 		b.VideoHeight = a.Template.VideoHeight
+// 		b.VideoBitrate = a.Template.VideoBitrate
+// 		b.AudioBitrate = a.Template.AudioBitrate
+// 		b.FrameRate = a.Template.FrameRate
+
+// 		if nil != a.Template.AdvancedArgumentsObj {
+// 			obj, err := json.Marshal(a.Template.AdvancedArgumentsObj)
+// 			if nil == err {
+// 				b.AdvancedArguments = string(obj)
+
+// 			}
+// 		}
+// 	}
+
+// 	return json.Marshal(b)
+
+// }

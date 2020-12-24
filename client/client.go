@@ -64,7 +64,7 @@ func newRequest(ctx context.Context, method, reqURL string, headers http.Header,
 		trace := &httptrace.ClientTrace{
 			GotConn: func(connInfo httptrace.GotConnInfo) {
 				remoteAddr := connInfo.Conn.RemoteAddr()
-				log.Println(fmt.Sprintf("Network: %s, Remote ip:%s, URL: %s", remoteAddr.Network(), remoteAddr.String(), req.URL))
+				log.Println(fmt.Sprintf("\nNetwork: %s, Remote ip:%s, URL: %s", remoteAddr.Network(), remoteAddr.String(), req.URL))
 			},
 		}
 		req = req.WithContext(httptrace.WithClientTrace(req.Context(), trace))
@@ -74,7 +74,7 @@ func newRequest(ctx context.Context, method, reqURL string, headers http.Header,
 
 			return
 		}
-		log.Println(string(bs))
+		log.Println("\n", string(bs))
 	}
 	return
 }

@@ -19,3 +19,4 @@
 
 config.go
 log.txt
+log*.txt
