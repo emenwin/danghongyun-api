@@ -43,7 +43,7 @@ func NewLiveManagerEx(cred *auth.Credentials, clt *client.Client) *DHLiveManager
 // http://api.danghongyun.com/rest
 func (m *DHLiveManager) TemplateCreate(parma Template) (*TemplateRespParam, error) {
 
-	parma.Type = 1
+	parma.Type = "1"
 	action := "liveTemplateCreate"
 	queryparam, _, _ := m.Credentials.Sign2(action, Version)
 
@@ -84,8 +84,8 @@ func (m *DHLiveManager) GetTemplates(name string, ttype string, transcodeType in
 
 	url := LiveRestAPIURL + "?" + queryparam
 	var respTempalte TemplateListRespParam
-	err := m.Client.CallWithJSON(context.Background(),
-		&respTempalte, "POST", url, nil, params)
+	err := m.Client.Call(context.Background(),
+		&respTempalte, "GET", url, nil)
 
 	if nil != err {
 		return nil, err

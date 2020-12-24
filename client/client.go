@@ -200,11 +200,21 @@ func ResponseError(resp *http.Response) (err error) {
 	return e
 }
 
+//Call get call
+func (r Client) Call(ctx context.Context, ret interface{}, method, reqURL string, headers http.Header) (err error) {
+
+	resp, err := r.DoRequestWith(ctx, method, reqURL, headers, nil, 0)
+	if err != nil {
+		return err
+	}
+	return CallRet(ctx, ret, resp)
+}
+
 //CallWithJSON api call
-func (r Client) CallWithJSON(ctx context.Context, ret interface{}, method, reqUrl string, headers http.Header,
+func (r Client) CallWithJSON(ctx context.Context, ret interface{}, method, reqURL string, headers http.Header,
 	param interface{}) (err error) {
 
-	resp, err := r.DoRequestWithJSON(ctx, method, reqUrl, headers, param)
+	resp, err := r.DoRequestWithJSON(ctx, method, reqURL, headers, param)
 	if err != nil {
 		return err
 	}

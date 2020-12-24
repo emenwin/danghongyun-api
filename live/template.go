@@ -20,14 +20,14 @@ type TemplateListRespParam struct {
 
 //Template 直播模板
 type Template struct {
-	DisplayName          string `json:"displayName"`
-	Type                 int    `json:"type"`
-	TranscodeType        int    `json:"transcodeType"`
-	VideoWidth           int    `json:"videoWidth"`
-	VideoHeight          int    `json:"videoHeight"`
-	VideoBitrate         int    `json:"videoBitrate"`
-	AudioBitrate         int    `json:"audioBitrate"`
-	FrameRate            int    `json:"frameRate"`
+	DisplayName          string `json:"displayName"`   //模版名称
+	Type                 string `json:"type"`          //模板类型 1.用户模板 2.系统模板
+	TranscodeType        int    `json:"transcodeType"` //所属直播类型。 0：普通直播、2：VR直播、3：进阶直播
+	VideoWidth           int    `json:"videoWidth"`    //视频宽
+	VideoHeight          int    `json:"videoHeight"`   //视频高
+	VideoBitrate         int    `json:"videoBitrate"`  //视频码率
+	AudioBitrate         int    `json:"audioBitrate"`  //音频码率
+	FrameRate            int    `json:"frameRate"`     //视频帧率
 	AdvancedArguments    string `json:"advancedArguments"`
 	AdvancedArgumentsObj *TemplateAdvancedArguments
 
