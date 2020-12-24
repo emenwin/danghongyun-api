@@ -2,9 +2,12 @@ package live
 
 import (
 	"context"
+	"fmt"
+	"strconv"
 
 	"github.com/emenwin/danghongyun-api/auth"
 	"github.com/emenwin/danghongyun-api/client"
+	"github.com/emenwin/danghongyun-api/utils"
 )
 
 const (
@@ -45,7 +48,7 @@ func (m *DHLiveManager) TemplateCreate(parma Template) (*TemplateRespParam, erro
 
 	parma.Type = "1"
 	action := "liveTemplateCreate"
-	queryparam, _, _ := m.Credentials.Sign2(action, Version)
+	queryparam, _ := m.Credentials.Sign2(action, Version, utils.NowMillisStr())
 
 	url := LiveRestAPIURL + "?" + queryparam
 	var respTempalte TemplateRespParam
@@ -66,10 +69,8 @@ func (m *DHLiveManager) TemplateCreate(parma Template) (*TemplateRespParam, erro
 // http://api.danghongyun.com/rest
 func (m *DHLiveManager) GetTemplates(name string, ttype string, transcodeType int) (*TemplateListRespParam, error) {
 
-	action := "liveGetTemplates"
-	queryparam, _, _ := m.Credentials.Sign2(action, Version)
+	params := m.Credentials.NewSignParams("liveGetTemplates", Version, "")
 
-	params := map[string]interface{}{}
 	if name != "" {
 		params["name"] = name
 	}
@@ -79,13 +80,18 @@ func (m *DHLiveManager) GetTemplates(name string, ttype string, transcodeType in
 	}
 
 	if transcodeType != -1 {
-		params["transcodeType"] = transcodeType
+		s := strconv.FormatInt(int64(transcodeType), 10)
+		params["transcodeType"] = s
 	}
+
+	queryparam, _ := m.Credentials.SignExt(params)
+	fmt.Println(queryparam)
 
 	url := LiveRestAPIURL + "?" + queryparam
 	var respTempalte TemplateListRespParam
-	err := m.Client.Call(context.Background(),
-		&respTempalte, "GET", url, nil)
+
+	err := m.Client.CallWithJSONQuery(context.Background(),
+		&respTempalte, "GET", url, nil, nil)
 
 	if nil != err {
 		return nil, err

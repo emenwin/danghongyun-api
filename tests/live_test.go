@@ -61,7 +61,7 @@ func TestGetTemplates(t *testing.T) {
 
 	livemanager := live.NewLiveManager(cred)
 
-	templateRsp, err := livemanager.GetTemplates("", "", -1)
+	templateRsp, err := livemanager.GetTemplates("VR高清", "2", 2)
 
 	if err != nil {
 		//t.Error("sign error ")

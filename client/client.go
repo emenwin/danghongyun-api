@@ -64,7 +64,7 @@ func newRequest(ctx context.Context, method, reqURL string, headers http.Header,
 		trace := &httptrace.ClientTrace{
 			GotConn: func(connInfo httptrace.GotConnInfo) {
 				remoteAddr := connInfo.Conn.RemoteAddr()
-				log.Println(fmt.Sprintf("\nNetwork: %s, Remote ip:%s, URL: %s", remoteAddr.Network(), remoteAddr.String(), req.URL))
+				log.Println(fmt.Sprintf("\n\nNetwork: %s, Remote ip:%s, URL: %s", remoteAddr.Network(), remoteAddr.String(), req.URL))
 			},
 		}
 		req = req.WithContext(httptrace.WithClientTrace(req.Context(), trace))
@@ -149,8 +149,30 @@ func (r Client) DoRequestWithJSON(ctx context.Context, method, reqURL string, he
 	if headers == nil {
 		headers = http.Header{}
 	}
+
 	headers.Add("Content-Type", "application/json")
 	return r.DoRequestWith(ctx, method, reqURL, headers, bytes.NewReader(reqBody), len(reqBody))
+}
+
+// DoRequestQueryWithJSON request
+func (r Client) DoRequestQueryWithJSON(ctx context.Context, method, reqURL string, headers http.Header,
+	data map[string][]string) (resp *http.Response, err error) {
+
+	if headers == nil {
+		headers = http.Header{}
+	}
+	headers.Add("Content-Type", "application/json")
+
+	requestData := url.Values(data).Encode()
+	//if method == "GET" || method == "HEAD" || method == "DELETE" {
+	// if strings.ContainsRune(reqURL, '?') {
+	// 	reqURL += "&"
+	// } else {
+	// 	reqURL += "?"
+	// }
+	return r.DoRequest(ctx, method, reqURL+requestData, headers)
+	//}
+
 }
 
 //Do do
@@ -221,6 +243,28 @@ func (r Client) CallWithJSON(ctx context.Context, ret interface{}, method, reqUR
 	return CallRet(ctx, ret, resp)
 }
 
+//CallWithJSONQuery api call
+func (r Client) CallWithJSONQuery(ctx context.Context, ret interface{}, method, reqURL string, headers http.Header,
+	param map[string][]string) (err error) {
+
+	resp, err := r.DoRequestQueryWithJSON(ctx, method, reqURL, headers, param)
+	if err != nil {
+		return err
+	}
+	return CallRet(ctx, ret, resp)
+}
+
+//CallWithForm do requeset
+func (r Client) CallWithForm(ctx context.Context, ret interface{}, method, reqURL string, headers http.Header,
+	param map[string][]string) (err error) {
+
+	resp, err := r.DoRequestWithForm(ctx, method, reqURL, headers, param)
+	if err != nil {
+		return err
+	}
+	return CallRet(ctx, ret, resp)
+}
+
 //CallRet 返回对象转换
 func CallRet(ctx context.Context, ret interface{}, resp *http.Response) (err error) {
 
@@ -237,7 +281,7 @@ func CallRet(ctx context.Context, ret interface{}, resp *http.Response) (err err
 
 			return
 		}
-		log.Println(string(bs))
+		log.Println("\n\n", string(bs))
 	}
 
 	if resp.StatusCode/100 == 2 {

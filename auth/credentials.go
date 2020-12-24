@@ -4,7 +4,9 @@ import (
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
-	"strconv"
+	"net/url"
+	"sort"
+	"strings"
 
 	"fmt"
 
@@ -38,30 +40,81 @@ func (ath *Credentials) Sign(action string, version string, timestamp int64) (si
 	return
 }
 
+//NewSignParams new signparmas
+func (ath *Credentials) NewSignParams(action string, version, timestamp string) map[string]string {
+
+	queryParams := map[string]string{
+		"action":    action,
+		"version":   version,
+		"timestamp": timestamp,
+	}
+	if timestamp == "" {
+		queryParams["timestamp"] = utils.NowMillisStr()
+	}
+	return queryParams
+}
+
 //Sign2 sign
-func (ath *Credentials) Sign2(action string, version string) (queryparams, timestamp, signature string) {
+func (ath *Credentials) Sign2(action string, version, timestamp string) (queryString, signature string) {
+
+	queryParams := map[string]string{
+		"action":    action,
+		"version":   version,
+		"timestamp": timestamp,
+	}
+	return ath.SignExt(queryParams)
+}
+
+//SignExt sign
+func (ath *Credentials) SignExt(queryParams map[string]string) (queryString, signature string) {
 	h := hmac.New(sha256.New, []byte(ath.SecretKey))
-	now := utils.NowMillis()
-	timestamp = strconv.FormatInt(now, 10)
-	data := fmt.Sprintf("%saccessKey=%saction=%stimestamp=%sversion=%s", ath.SecretKey, ath.AccessKey, action, timestamp, version)
-	h.Write([]byte(data))
+
+	queryParams["accessKey"] = ath.AccessKey
+
+	items := xHeaders{}
+	for k, v := range queryParams {
+		item := xItem{k, v}
+		items = append(items, item)
+	}
+	sort.Sort(items)
+
+	toSign := ath.SecretKey
+	params := []string{}
+
+	for _, item := range items {
+		//注意：
+		//url 参数需要escape
+		//参与签名不需要
+		kv := item.Name + "=" + item.Value
+		toSign += kv
+		kv2 := item.Name + "=" + url.QueryEscape(item.Value)
+
+		params = append(params, kv2)
+	}
+
+	// fmt.Println("\n\n")
+	// fmt.Println("queryParams:", queryParams)
+	// fmt.Println("params:", params)
+	// fmt.Println("toSign:", toSign)
+	// fmt.Println("\n\n")
+
+	h.Write([]byte(toSign))
+
 	signature = hex.EncodeToString(h.Sum(nil))
 
-	queryparams = fmt.Sprintf("accessKey=%s&action=%s&version=%s&timestamp=%s&signature=%s",
-		ath.AccessKey,
-		action,
-		version,
-		timestamp,
-		signature)
+	params = append(params, "signature="+signature)
+	queryString = strings.Join(params, "&")
+
+	//fmt.Println("queryString:", queryString)
 	return
 }
 
 type (
-	xHeaderItem struct {
-		HeaderName  string
-		HeaderValue string
+	xItem struct {
+		Name  string
+		Value string
 	}
-	xHeaders []xHeaderItem
+	xHeaders []xItem
 )
 
 func (headers xHeaders) Len() int {
@@ -69,12 +122,12 @@ func (headers xHeaders) Len() int {
 }
 
 func (headers xHeaders) Less(i, j int) bool {
-	if headers[i].HeaderName < headers[j].HeaderName {
+	if headers[i].Name < headers[j].Name {
 		return true
-	} else if headers[i].HeaderName > headers[j].HeaderName {
+	} else if headers[i].Name > headers[j].Name {
 		return false
 	} else {
-		return headers[i].HeaderValue < headers[j].HeaderValue
+		return headers[i].Value < headers[j].Value
 	}
 }
 
