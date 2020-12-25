@@ -647,3 +647,37 @@ func (m *DHLiveManager) StopRecordLiveChannel(channelID, outputGroupID string) (
 
 	return &respLivelogo, nil
 }
+
+//EditLiveTimeshift 直播时移
+//要时移的时间点与当前时间的差值，负整数，单位秒
+func (m *DHLiveManager) EditLiveTimeshift(timeshift int, playURL string) (*LivechannelRespParam, error) {
+	url := playURL + "?timeshift=" + strconv.Itoa(timeshift)
+
+	var respLivelogo LivechannelRespParam
+
+	err := m.Client.CallWithForm(context.Background(),
+		&respLivelogo, "POST", url, nil, nil)
+
+	if nil != err {
+		return nil, err
+	}
+
+	return &respLivelogo, nil
+}
+
+//BackLiveTime 回看
+//要时移的时间点与当前时间的差值，负整数，单位秒
+func (m *DHLiveManager) BackLiveTime(beginTime, endTime, playURL string) (*LivechannelRespParam, error) {
+	url := playURL + "?beginTime=" + beginTime + "&endTime=" + endTime
+
+	var respLivelogo LivechannelRespParam
+
+	err := m.Client.CallWithForm(context.Background(),
+		&respLivelogo, "POST", url, nil, nil)
+
+	if nil != err {
+		return nil, err
+	}
+
+	return &respLivelogo, nil
+}
