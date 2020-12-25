@@ -61,7 +61,7 @@ func (m *DHLiveManager) TemplateCreate(template Template) (*TemplateRespParam, e
 
 	var respTempalte TemplateRespParam
 	err := m.Client.CallWithJSON(context.Background(),
-		&respTempalte, "POST", url, nil, template)
+		&respTempalte, "POST", url, nil, nil)
 
 	if nil != err {
 		return nil, err
@@ -125,7 +125,7 @@ func (m *DHLiveManager) EditTemplate(template Template) (*TemplateRespParam, err
 	url := LiveRestAPIURL + "?" + queryparam
 	var respTempalte TemplateRespParam
 	err := m.Client.CallWithJSON(context.Background(),
-		&respTempalte, "POST", url, nil, template)
+		&respTempalte, "POST", url, nil, nil)
 
 	if nil != err {
 		return nil, err
@@ -144,7 +144,7 @@ func (m *DHLiveManager) DeleteTemplates(param Template) (*TemplateRespParam, err
 	url := LiveRestAPIURL + "?" + queryparam
 	var respTempalte TemplateRespParam
 	err := m.Client.CallWithJSON(context.Background(),
-		&respTempalte, "POST", url, nil, param)
+		&respTempalte, "POST", url, nil, nil)
 
 	if nil != err {
 		return nil, err
@@ -232,7 +232,7 @@ func (m *DHLiveManager) DeleteLivetype(livetype Livetype) (*LivetypeRespParam, e
 
 	var respLivetype LivetypeRespParam
 	err := m.Client.CallWithJSON(context.Background(),
-		&respLivetype, "POST", url, nil, livetype)
+		&respLivetype, "POST", url, nil, nil)
 
 	if nil != err {
 		return nil, err
