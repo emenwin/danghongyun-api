@@ -30,12 +30,14 @@ func TestCreatTemplate(t *testing.T) {
 	template := live.Template{}
 	rd := rand.New(rand.NewSource(time.Now().UnixNano()))
 
-	template.DisplayName = fmt.Sprintf("TestCreatTemplate %d", rd.Intn(99999))
-	template.Name = fmt.Sprintf("TestCreatTemplate Name %d", rd.Intn(99999))
-	template.VideoWidth = rd.Intn(1000)
-	template.VideoHeight = rd.Intn(1000)
+	template.DisplayName = fmt.Sprintf("模板添加 --测试 %d", rd.Intn(99999))
+	template.VideoWidth = rd.Intn(800)
+	template.VideoHeight = rd.Intn(800)
 	template.AudioBitrate = rd.Intn(1000)
-	template.FrameRate = rd.Intn(1000)
+	template.VideoBitrate = rd.Intn(1000)
+	template.FrameRate = rd.Intn(50)
+	template.TranscodeType = 0
+	template.AdvancedArguments = "{\"rc\":\"CBR\",\"gopSize\":4000,\"bFrame\":0,\"refFrame\":1,\"qualityLevel\":null,\"interlace\":-1,\"smartBorder\":1}"
 
 	templateRsp, err := livemanager.TemplateCreate(template)
 
@@ -94,8 +96,16 @@ func TestEditTemplate(t *testing.T) {
 	livemanager := live.NewLiveManager(cred)
 
 	template := live.Template{}
-	template.ID = "26c3ebf49cf64153a270ace17a074e58"
-	template.DisplayName = "修改直播模板名称"
+	rd := rand.New(rand.NewSource(time.Now().UnixNano()))
+	template.ID = "605f8dbe0cec4773b9df64cc88ce89ef"
+	template.DisplayName = fmt.Sprintf("模板修改 --测试 %d", rd.Intn(99999))
+	template.VideoWidth = rd.Intn(800)
+	template.VideoHeight = rd.Intn(800)
+	template.AudioBitrate = rd.Intn(1000)
+	template.VideoBitrate = rd.Intn(1000)
+	template.FrameRate = rd.Intn(50)
+	template.TranscodeType = 0
+	template.AdvancedArguments = "{\"rc\":\"CBR\",\"gopSize\":4000,\"bFrame\":0,\"refFrame\":1,\"qualityLevel\":null,\"interlace\":-1,\"smartBorder\":1}"
 
 	templateRsp, err := livemanager.EditTemplate(template)
 
@@ -123,7 +133,7 @@ func TestDeleteTemplate(t *testing.T) {
 
 	livemanager := live.NewLiveManager(cred)
 
-	param := live.Template{ID: "26c3ebf49cf64153a270ace17a074e58"}
+	param := live.Template{ID: "605f8dbe0cec4773b9df64cc88ce89ef,dc00bb3f3d8045449a12d9186b90df3b"}
 
 	templateRsp, err := livemanager.DeleteTemplates(param)
 
@@ -246,6 +256,138 @@ func TestDeleteLivetype(t *testing.T) {
 	livetype := live.Livetype{ID: "e402a628a14a4ce29de447741c3ba46d"}
 
 	templateRsp, err := livemanager.DeleteLivetype(livetype)
+
+	if err != nil {
+		//t.Error("sign error ")
+		t.Errorf(err.Error())
+	}
+
+	fmt.Println(templateRsp)
+}
+
+func TestGetLivelogos(t *testing.T) {
+	accessKey := "275ee3cd-6fb"
+	accessSecret := "5GcXHNYdAVVdFW0yervG"
+
+	if TestAccessKey != "" {
+		accessKey = TestAccessKey
+		accessSecret = TestSecretKey
+	}
+
+	fmt.Println(accessKey)
+	fmt.Println(accessSecret)
+
+	cred := auth.New(accessKey, accessSecret)
+
+	livemanager := live.NewLiveManager(cred)
+
+	templateRsp, err := livemanager.GetLivelogos("", "")
+
+	if err != nil {
+		//t.Error("sign error ")
+		t.Errorf(err.Error())
+	} else if !templateRsp.Success {
+		t.Errorf("Success:%v, msg:%s", templateRsp.Success, templateRsp.Message)
+
+	}
+
+	fmt.Println(templateRsp)
+}
+
+func TestCreatLivelogo(t *testing.T) {
+
+	accessKey := "275ee3cd-6fb"
+	accessSecret := "5GcXHNYdAVVdFW0yervG"
+
+	if TestAccessKey != "" {
+		accessKey = TestAccessKey
+		accessSecret = TestSecretKey
+	}
+
+	fmt.Println(accessKey)
+	fmt.Println(accessSecret)
+
+	cred := auth.New(accessKey, accessSecret)
+
+	livemanager := live.NewLiveManager(cred)
+
+	livelogo := live.Livelogo{}
+	rd := rand.New(rand.NewSource(time.Now().UnixNano()))
+	livelogo.Name = fmt.Sprintf("添加直播logo ---  测试 %d", rd.Intn(99999))
+	livelogo.Uri = "bj-hsy-images/kii721n6/watermarkLive/65112b7ae7394313a679020c3543cae9.jpg"
+	livelogo.Height = 200
+	livelogo.Width = 200
+	livelogo.OffsetHeight = 1
+	livelogo.OffsetWidth = 1
+	livelogo.Resize = 100
+	livelogo.Opacity = 100
+	templateRsp, err := livemanager.CreateLivelogo(livelogo)
+
+	if err != nil {
+		//t.Error("sign error ")
+		t.Errorf(err.Error())
+	}
+
+	fmt.Println(templateRsp)
+}
+
+func TestEditLivelogo(t *testing.T) {
+
+	accessKey := "275ee3cd-6fb"
+	accessSecret := "5GcXHNYdAVVdFW0yervG"
+
+	if TestAccessKey != "" {
+		accessKey = TestAccessKey
+		accessSecret = TestSecretKey
+	}
+
+	fmt.Println(accessKey)
+	fmt.Println(accessSecret)
+
+	cred := auth.New(accessKey, accessSecret)
+
+	livemanager := live.NewLiveManager(cred)
+
+	livelogo := live.Livelogo{}
+	rd := rand.New(rand.NewSource(time.Now().UnixNano()))
+	livelogo.ID = "57039b8eacce498b8dff5cdf47f4f326"
+	livelogo.Name = fmt.Sprintf("修改直播logo --测试 %d", rd.Intn(99999))
+	livelogo.Uri = "bj-hsy-images/kii721n6/watermarkLive/65112b7ae7394313a679020c3543cae9.jpg"
+	livelogo.Height = 200
+	livelogo.Width = 200
+	livelogo.OffsetHeight = 1
+	livelogo.OffsetWidth = 1
+	livelogo.Resize = 100
+	livelogo.Opacity = 100
+	templateRsp, err := livemanager.EditLivelogo(livelogo)
+
+	if err != nil {
+		//t.Error("sign error ")
+		t.Errorf(err.Error())
+	}
+
+	fmt.Println(templateRsp)
+}
+
+func TestDeleteLivelogo(t *testing.T) {
+
+	accessKey := "275ee3cd-6fb"
+	accessSecret := "5GcXHNYdAVVdFW0yervG"
+
+	if TestAccessKey != "" {
+		accessKey = TestAccessKey
+		accessSecret = TestSecretKey
+	}
+
+	fmt.Println(accessKey)
+	fmt.Println(accessSecret)
+
+	cred := auth.New(accessKey, accessSecret)
+
+	livemanager := live.NewLiveManager(cred)
+
+	livelogo := live.Livelogo{ID: "57039b8eacce498b8dff5cdf47f4f326,e99149aefe814bed96d2151e3d36652e"}
+	templateRsp, err := livemanager.DeleteLivelogo(livelogo)
 
 	if err != nil {
 		//t.Error("sign error ")

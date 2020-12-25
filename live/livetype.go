@@ -20,7 +20,7 @@ type LivetypeListRespParam struct {
 //Livetype 直播类型
 type Livetype struct {
 	ID         string `json:"id,omitempty" `        //:唯一标识
-	Name       string `json:"name"`                 //模版名称/码率/宽x高
+	Name       string `json:"name"`                 //直播类型名称
 	UserID     int64  `json:"userId,omitempty"`     //用户id
 	CreateTime int64  `json:"createTime,omitempty"` //创建时间
 	UpdateTime int64  `json:"updateTime,omitempty"` //更新时间

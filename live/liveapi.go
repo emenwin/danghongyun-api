@@ -53,6 +53,8 @@ func (m *DHLiveManager) TemplateCreate(template Template) (*TemplateRespParam, e
 	params["videoBitrate"] = strconv.Itoa(template.VideoBitrate)
 	params["audioBitrate"] = strconv.Itoa(template.AudioBitrate)
 	params["displayName"] = template.DisplayName
+	params["frameRate"] = strconv.Itoa(template.FrameRate)
+	params["advancedArguments"] = template.AdvancedArguments
 
 	queryparam, _ := m.Credentials.SignExt(params)
 	url := LiveRestAPIURL + "?" + queryparam
@@ -117,6 +119,8 @@ func (m *DHLiveManager) EditTemplate(template Template) (*TemplateRespParam, err
 	params["videoBitrate"] = strconv.Itoa(template.VideoBitrate)
 	params["audioBitrate"] = strconv.Itoa(template.AudioBitrate)
 	params["displayName"] = template.DisplayName
+	params["frameRate"] = strconv.Itoa(template.FrameRate)
+	params["advancedArguments"] = template.AdvancedArguments
 	queryparam, _ := m.Credentials.SignExt(params)
 	url := LiveRestAPIURL + "?" + queryparam
 	var respTempalte TemplateRespParam
@@ -235,4 +239,109 @@ func (m *DHLiveManager) DeleteLivetype(livetype Livetype) (*LivetypeRespParam, e
 	}
 
 	return &respLivetype, nil
+}
+
+//GetLivelogos 查询直播logo
+func (m *DHLiveManager) GetLivelogos(name string, id string) (*LivelogoListRespParam, error) {
+
+	params := m.Credentials.NewSignParams("liveLogoList", Version, "")
+
+	if name != "" {
+		params["name"] = name
+	}
+
+	if id != "" {
+		params["id"] = id
+	}
+
+	queryparam, _ := m.Credentials.SignExt(params)
+	fmt.Println(queryparam)
+
+	url := LiveRestAPIURL + "?" + queryparam
+	var respLivelogo LivelogoListRespParam
+
+	err := m.Client.CallWithJSONQuery(context.Background(),
+		&respLivelogo, "GET", url, nil, nil)
+
+	if nil != err {
+		return nil, err
+	}
+
+	return &respLivelogo, nil
+}
+
+// CreateLivelogo 创建直播logo
+func (m *DHLiveManager) CreateLivelogo(livelogo Livelogo) (*LivelogoRespParam, error) {
+
+	params := m.Credentials.NewSignParams("liveLogoCreate", Version, "")
+	params["name"] = livelogo.Name
+	params["uri"] = livelogo.Uri
+	params["width"] = strconv.Itoa(livelogo.Width)
+	params["height"] = strconv.Itoa(livelogo.Height)
+	params["offsetHeight"] = strconv.Itoa(livelogo.OffsetHeight)
+	params["offsetWidth"] = strconv.Itoa(livelogo.OffsetWidth)
+	params["opacity"] = strconv.Itoa(livelogo.Opacity)
+	params["resize"] = strconv.Itoa(livelogo.Resize)
+	queryparam, _ := m.Credentials.SignExt(params)
+	url := LiveRestAPIURL + "?" + queryparam
+
+	var respLivelogo LivelogoRespParam
+
+	err := m.Client.CallWithForm(context.Background(),
+		&respLivelogo, "POST", url, nil, nil)
+
+	if nil != err {
+		return nil, err
+	}
+
+	return &respLivelogo, nil
+}
+
+// EditLivelogo 修改直播logo
+func (m *DHLiveManager) EditLivelogo(livelogo Livelogo) (*LivelogoRespParam, error) {
+
+	params := m.Credentials.NewSignParams("liveLogoUpdate", Version, "")
+	params["id"] = livelogo.ID
+	params["name"] = livelogo.Name
+	params["uri"] = livelogo.Uri
+	params["width"] = strconv.Itoa(livelogo.Width)
+	params["height"] = strconv.Itoa(livelogo.Height)
+	params["offsetHeight"] = strconv.Itoa(livelogo.OffsetHeight)
+	params["offsetWidth"] = strconv.Itoa(livelogo.OffsetWidth)
+	params["opacity"] = strconv.Itoa(livelogo.Opacity)
+	params["resize"] = strconv.Itoa(livelogo.Resize)
+	queryparam, _ := m.Credentials.SignExt(params)
+	url := LiveRestAPIURL + "?" + queryparam
+
+	var respLivelogo LivelogoRespParam
+
+	err := m.Client.CallWithForm(context.Background(),
+		&respLivelogo, "POST", url, nil, nil)
+
+	if nil != err {
+		return nil, err
+	}
+
+	return &respLivelogo, nil
+}
+
+// DeleteLivelogo 删除 批量删除直播logo
+//logo唯一标识，多个id用“,”分隔
+func (m *DHLiveManager) DeleteLivelogo(livelogo Livelogo) (*LivelogoRespParam, error) {
+
+	params := m.Credentials.NewSignParams("liveLogoDelete", Version, "")
+	params["id"] = livelogo.ID
+	queryparam, _ := m.Credentials.SignExt(params)
+	url := LiveRestAPIURL + "?" + queryparam
+
+	var respLivelogo LivelogoRespParam
+
+	err := m.Client.CallWithForm(context.Background(),
+		&respLivelogo, "POST", url, nil, nil)
+
+	if nil != err {
+		return nil, err
+	}
+
+	return &respLivelogo, nil
 }
