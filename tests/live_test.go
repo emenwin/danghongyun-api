@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math/rand"
 	"testing"
+	"time"
 
 	"github.com/emenwin/danghongyun-api/auth"
 	"github.com/emenwin/danghongyun-api/live"
@@ -27,12 +28,14 @@ func TestCreatTemplate(t *testing.T) {
 	livemanager := live.NewLiveManager(cred)
 
 	template := live.Template{}
-	template.DisplayName = fmt.Sprintf("TestCreatTemplate %d", rand.Intn(99999))
-	template.Name = fmt.Sprintf("TestCreatTemplate Name %d", rand.Intn(99999))
-	template.VideoWidth = rand.Intn(1000)
-	template.VideoHeight = rand.Intn(1000)
-	template.AudioBitrate = rand.Intn(1000)
-	template.FrameRate = rand.Intn(1000)
+	rd := rand.New(rand.NewSource(time.Now().UnixNano()))
+
+	template.DisplayName = fmt.Sprintf("TestCreatTemplate %d", rd.Intn(99999))
+	template.Name = fmt.Sprintf("TestCreatTemplate Name %d", rd.Intn(99999))
+	template.VideoWidth = rd.Intn(1000)
+	template.VideoHeight = rd.Intn(1000)
+	template.AudioBitrate = rd.Intn(1000)
+	template.FrameRate = rd.Intn(1000)
 
 	templateRsp, err := livemanager.TemplateCreate(template)
 
@@ -180,7 +183,9 @@ func TestCreatLivetype(t *testing.T) {
 	livemanager := live.NewLiveManager(cred)
 
 	livetype := live.Livetype{}
-	livetype.Name = fmt.Sprintf("直播类型 %d", rand.Intn(99999))
+	rd := rand.New(rand.NewSource(time.Now().UnixNano()))
+
+	livetype.Name = fmt.Sprintf("直播类型 %d", rd.Intn(99999))
 	templateRsp, err := livemanager.CreateLivetype(livetype)
 
 	if err != nil {

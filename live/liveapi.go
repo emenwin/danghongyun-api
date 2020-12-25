@@ -91,7 +91,6 @@ func (m *DHLiveManager) GetTemplates(name string, ttype string, transcodeType in
 	}
 
 	queryparam, _ := m.Credentials.SignExt(params)
-	fmt.Println(queryparam)
 
 	url := LiveRestAPIURL + "?" + queryparam
 	var respTempalte TemplateListRespParam
@@ -210,7 +209,7 @@ func (m *DHLiveManager) EditLivetype(livetype Livetype) (*LivetypeRespParam, err
 
 	var respLivetype LivetypeRespParam
 	err := m.Client.CallWithJSON(context.Background(),
-		&respLivetype, "POST", url, nil, livetype)
+		&respLivetype, "POST", url, nil, nil)
 
 	if nil != err {
 		return nil, err
