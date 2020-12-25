@@ -51,7 +51,7 @@ type OutputGroup struct {
 	LiveLogoID              string       `json:"liveLogoId"`              //直播Logo id
 	OutputTemplateList      []Template   `json:"outputTemplateList"`      //直播模板列表
 	LiveOutputs             []LiveOutput `json:"liveOutputs"`             //输出信息
-	LiveLogo                string       `json:"liveLogo"`                //直播logo信息
+	LiveLogo                Livelogo     `json:"liveLogo"`                //直播logo信息
 	LogoID                  string       `json:"logoId"`                  //直播Logo id
 	RtmpThirdPartyOutputURL string       `json:"rtmpThirdPartyOutputUrl"` //rtmp第三方输出地址
 	IsRecord                string       `json:"isRecord"`                //是否录制，0.否 1.是

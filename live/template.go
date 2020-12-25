@@ -43,14 +43,14 @@ type Template struct {
 
 //TemplateAdvancedArguments 模板高级参数 //advancedArguments : 高级参数
 type TemplateAdvancedArguments struct {
-	Rc           string      `json:"rc"`           //rc:码率控制
-	GopType      int         `json:"gopType"`      //gopType: gop单位：0-帧（默认） 1-时间（毫秒）
-	GopSize      int         `json:"gopSize"`      //gopSize: GOP大小
-	Bframe       int         `json:"bframe"`       //bframe: B帧
-	RefFrame     string      `json:"refFrame"`     //refFrame: 参考帧
-	QualityLevel interface{} `json:"qualityLevel"` //qualityLevel ? null
-	Interlace    string      `json:"interlace"`    //interlace": 帧场模式 -1-跟随源 0-帧 3-MBAFF
-	SmartBorder  string      `json:"smartBorder"`  //smartBorder: 宽高变换模式：0-线性拉伸 1-智能黑边 2-自动裁剪
+	Rc           string `json:"rc"`           //rc:码率控制
+	GopType      int    `json:"gopType"`      //gopType: gop单位：0-帧（默认） 1-时间（毫秒）
+	GopSize      int    `json:"gopSize"`      //gopSize: GOP大小
+	Bframe       int    `json:"bframe"`       //bframe: B帧
+	RefFrame     int    `json:"refFrame"`     //refFrame: 参考帧
+	QualityLevel int    `json:"qualityLevel"` //qualityLevel ? null
+	Interlace    int    `json:"interlace"`    //interlace": 帧场模式 -1-跟随源 0-帧 3-MBAFF
+	SmartBorder  int    `json:"smartBorder"`  //smartBorder: 宽高变换模式：0-线性拉伸 1-智能黑边 2-自动裁剪
 
 }
 
