@@ -281,7 +281,7 @@ func TestGetLivelogos(t *testing.T) {
 
 	livemanager := live.NewLiveManager(cred)
 
-	templateRsp, err := livemanager.GetLivelogos("", "")
+	templateRsp, err := livemanager.GetLivelogos("北体传媒", "")
 
 	if err != nil {
 		//t.Error("sign error ")
@@ -388,6 +388,439 @@ func TestDeleteLivelogo(t *testing.T) {
 
 	livelogo := live.Livelogo{ID: "57039b8eacce498b8dff5cdf47f4f326,e99149aefe814bed96d2151e3d36652e"}
 	templateRsp, err := livemanager.DeleteLivelogo(livelogo)
+
+	if err != nil {
+		//t.Error("sign error ")
+		t.Errorf(err.Error())
+	}
+
+	fmt.Println(templateRsp)
+}
+
+func TestGetPageLivechannels(t *testing.T) {
+	accessKey := "275ee3cd-6fb"
+	accessSecret := "5GcXHNYdAVVdFW0yervG"
+
+	if TestAccessKey != "" {
+		accessKey = TestAccessKey
+		accessSecret = TestSecretKey
+	}
+
+	fmt.Println(accessKey)
+	fmt.Println(accessSecret)
+
+	cred := auth.New(accessKey, accessSecret)
+
+	livemanager := live.NewLiveManager(cred)
+	searchLivechannel := live.SearchLivechannelParam{}
+	searchLivechannel.Number = 0
+	searchLivechannel.Start = 0
+
+	templateRsp, err := livemanager.GetPageLivechannels(searchLivechannel)
+
+	if err != nil {
+		//t.Error("sign error ")
+		t.Errorf(err.Error())
+	} else if !templateRsp.Success {
+		t.Errorf("Success:%v, msg:%s", templateRsp.Success, templateRsp.Message)
+
+	}
+
+	fmt.Println(templateRsp)
+
+}
+
+func TestGetLivechannelByID(t *testing.T) {
+	accessKey := "275ee3cd-6fb"
+	accessSecret := "5GcXHNYdAVVdFW0yervG"
+
+	if TestAccessKey != "" {
+		accessKey = TestAccessKey
+		accessSecret = TestSecretKey
+	}
+
+	fmt.Println(accessKey)
+	fmt.Println(accessSecret)
+
+	cred := auth.New(accessKey, accessSecret)
+
+	livemanager := live.NewLiveManager(cred)
+	id := "4c773ac9b0ac4917ab203cd66f18b398"
+
+	templateRsp, err := livemanager.GetLivechannelByID(id)
+
+	if err != nil {
+		//t.Error("sign error ")
+		t.Errorf(err.Error())
+	} else if !templateRsp.Success {
+		t.Errorf("Success:%v, msg:%s", templateRsp.Success, templateRsp.Message)
+
+	}
+
+	fmt.Println(templateRsp)
+
+}
+
+func TestGetLivechannelPlayURL(t *testing.T) {
+	accessKey := "275ee3cd-6fb"
+	accessSecret := "5GcXHNYdAVVdFW0yervG"
+
+	if TestAccessKey != "" {
+		accessKey = TestAccessKey
+		accessSecret = TestSecretKey
+	}
+
+	fmt.Println(accessKey)
+	fmt.Println(accessSecret)
+
+	cred := auth.New(accessKey, accessSecret)
+
+	livemanager := live.NewLiveManager(cred)
+	id := "0f4f319ef71a4d9ea2a54a91a9d27f19"
+
+	templateRsp, err := livemanager.GetLivechannelsPlayURL(id)
+
+	if err != nil {
+		//t.Error("sign error ")
+		t.Errorf(err.Error())
+	} else if !templateRsp.Success {
+		t.Errorf("Success:%v, msg:%s", templateRsp.Success, templateRsp.Message)
+
+	}
+
+	fmt.Println(templateRsp)
+
+}
+
+func TestCreateLivechannel(t *testing.T) {
+
+	accessKey := "275ee3cd-6fb"
+	accessSecret := "5GcXHNYdAVVdFW0yervG"
+
+	if TestAccessKey != "" {
+		accessKey = TestAccessKey
+		accessSecret = TestSecretKey
+	}
+
+	fmt.Println(accessKey)
+	fmt.Println(accessSecret)
+
+	cred := auth.New(accessKey, accessSecret)
+
+	livemanager := live.NewLiveManager(cred)
+
+	livechannel := live.CreateOrUpdatechannelParam{}
+	rd := rand.New(rand.NewSource(time.Now().UnixNano()))
+	livechannel.Name = fmt.Sprintf("添加直播频道 ---  测试 %d", rd.Intn(99999))
+	livechannel.SignalType = "1"
+	livechannel.PullStream = ""
+	livechannel.LiveType = 0
+	livechannel.TypeName = "类型名称--测试--添加"
+	livechannel.Type = "3daa3949c294456ab40273ab2d8afba1"
+	templateList := []live.CreateTemplateList{
+		{
+			TemplateID: "4a8235f0ad80496b940c44e1436dff87",
+			IsDefault:  "0",
+		},
+	}
+	grouList := []live.CreateGroupList{
+		{
+			ProtocolType:            1,
+			RtmpThirdPartyOutputURL: "",
+			Rotation:                "90",
+			IsRecord:                "1",
+			NeedToMp4:               "1",
+			IsTimeShift:             "0",
+			TimeShiftDuration:       "",
+			IsLiveEncrypt:           "0",
+			LogoID:                  "5b99a7d13afd4e7eb4a52e15210982f6",
+			OutputTemplateList:      templateList,
+		},
+	}
+	livechannel.OutputGroupList = grouList
+
+	templateRsp, err := livemanager.CreateLivechannel(livechannel)
+
+	if err != nil {
+		//t.Error("sign error ")
+		t.Errorf(err.Error())
+	}
+
+	fmt.Println(templateRsp)
+}
+
+func TestEditLivechannel(t *testing.T) {
+
+	accessKey := "275ee3cd-6fb"
+	accessSecret := "5GcXHNYdAVVdFW0yervG"
+
+	if TestAccessKey != "" {
+		accessKey = TestAccessKey
+		accessSecret = TestSecretKey
+	}
+
+	fmt.Println(accessKey)
+	fmt.Println(accessSecret)
+
+	cred := auth.New(accessKey, accessSecret)
+
+	livemanager := live.NewLiveManager(cred)
+
+	livechannel := live.CreateOrUpdatechannelParam{}
+	livechannel.ID = "4c773ac9b0ac4917ab203cd66f18b398"
+	rd := rand.New(rand.NewSource(time.Now().UnixNano()))
+	livechannel.Name = fmt.Sprintf("修改直播频道 ---  测试 %d", rd.Intn(99999))
+	livechannel.SignalType = "1"
+	livechannel.PullStream = ""
+	livechannel.LiveType = 0
+	livechannel.TypeName = "类型名称--修改--测试"
+	livechannel.Type = "3daa3949c294456ab40273ab2d8afba1"
+	templateList := []live.CreateTemplateList{
+		{
+			TemplateID: "4a8235f0ad80496b940c44e1436dff87",
+			IsDefault:  "0",
+		},
+	}
+	grouList := []live.CreateGroupList{
+		{
+			ProtocolType:            1,
+			RtmpThirdPartyOutputURL: "",
+			Rotation:                "90",
+			IsRecord:                "1",
+			NeedToMp4:               "1",
+			IsTimeShift:             "0",
+			TimeShiftDuration:       "",
+			IsLiveEncrypt:           "0",
+			LogoID:                  "5b99a7d13afd4e7eb4a52e15210982f6",
+			OutputTemplateList:      templateList,
+		},
+	}
+	livechannel.OutputGroupList = grouList
+
+	templateRsp, err := livemanager.EditLivechannel(livechannel)
+
+	if err != nil {
+		//t.Error("sign error ")
+		t.Errorf(err.Error())
+	}
+
+	fmt.Println(templateRsp)
+}
+
+func TestDeleteLivechannel(t *testing.T) {
+
+	accessKey := "275ee3cd-6fb"
+	accessSecret := "5GcXHNYdAVVdFW0yervG"
+
+	if TestAccessKey != "" {
+		accessKey = TestAccessKey
+		accessSecret = TestSecretKey
+	}
+
+	fmt.Println(accessKey)
+	fmt.Println(accessSecret)
+
+	cred := auth.New(accessKey, accessSecret)
+
+	livemanager := live.NewLiveManager(cred)
+
+	ids := "b2ec7fb099694915a209b5b65d016419,d5a4f6ccbb4a4d8ea1e1b2e0433d2501"
+	templateRsp, err := livemanager.DeleteLivechannel(ids)
+
+	if err != nil {
+		//t.Error("sign error ")
+		t.Errorf(err.Error())
+	}
+
+	fmt.Println(templateRsp)
+}
+
+func TestSetLiveCallback(t *testing.T) {
+
+	accessKey := "275ee3cd-6fb"
+	accessSecret := "5GcXHNYdAVVdFW0yervG"
+
+	if TestAccessKey != "" {
+		accessKey = TestAccessKey
+		accessSecret = TestSecretKey
+	}
+
+	fmt.Println(accessKey)
+	fmt.Println(accessSecret)
+
+	cred := auth.New(accessKey, accessSecret)
+
+	livemanager := live.NewLiveManager(cred)
+
+	value := "https://igit.xempower.cn/team-china/danghongyun-api-golang/tree/main"
+	templateRsp, err := livemanager.SetLiveCallback(value)
+
+	if err != nil {
+		//t.Error("sign error ")
+		t.Errorf(err.Error())
+	}
+
+	fmt.Println(templateRsp)
+}
+
+func TestStartLiveChannel(t *testing.T) {
+
+	accessKey := "275ee3cd-6fb"
+	accessSecret := "5GcXHNYdAVVdFW0yervG"
+
+	if TestAccessKey != "" {
+		accessKey = TestAccessKey
+		accessSecret = TestSecretKey
+	}
+
+	fmt.Println(accessKey)
+	fmt.Println(accessSecret)
+
+	cred := auth.New(accessKey, accessSecret)
+
+	livemanager := live.NewLiveManager(cred)
+
+	id := "0f4f319ef71a4d9ea2a54a91a9d27f19"
+	templateRsp, err := livemanager.StartLiveChannel(id)
+
+	if err != nil {
+		//t.Error("sign error ")
+		t.Errorf(err.Error())
+	}
+
+	fmt.Println(templateRsp)
+}
+
+func TestStopLiveChannel(t *testing.T) {
+
+	accessKey := "275ee3cd-6fb"
+	accessSecret := "5GcXHNYdAVVdFW0yervG"
+
+	if TestAccessKey != "" {
+		accessKey = TestAccessKey
+		accessSecret = TestSecretKey
+	}
+
+	fmt.Println(accessKey)
+	fmt.Println(accessSecret)
+
+	cred := auth.New(accessKey, accessSecret)
+
+	livemanager := live.NewLiveManager(cred)
+
+	id := "0f4f319ef71a4d9ea2a54a91a9d27f19"
+	templateRsp, err := livemanager.StopLiveChannel(id)
+
+	if err != nil {
+		//t.Error("sign error ")
+		t.Errorf(err.Error())
+	}
+
+	fmt.Println(templateRsp)
+}
+func TestStartPullLiveChannel(t *testing.T) {
+
+	accessKey := "275ee3cd-6fb"
+	accessSecret := "5GcXHNYdAVVdFW0yervG"
+
+	if TestAccessKey != "" {
+		accessKey = TestAccessKey
+		accessSecret = TestSecretKey
+	}
+
+	fmt.Println(accessKey)
+	fmt.Println(accessSecret)
+
+	cred := auth.New(accessKey, accessSecret)
+
+	livemanager := live.NewLiveManager(cred)
+
+	id := "0f4f319ef71a4d9ea2a54a91a9d27f19"
+	templateRsp, err := livemanager.StartPullLiveChannel(id)
+
+	if err != nil {
+		//t.Error("sign error ")
+		t.Errorf(err.Error())
+	}
+
+	fmt.Println(templateRsp)
+}
+func TestStopPullLiveChannel(t *testing.T) {
+
+	accessKey := "275ee3cd-6fb"
+	accessSecret := "5GcXHNYdAVVdFW0yervG"
+
+	if TestAccessKey != "" {
+		accessKey = TestAccessKey
+		accessSecret = TestSecretKey
+	}
+
+	fmt.Println(accessKey)
+	fmt.Println(accessSecret)
+
+	cred := auth.New(accessKey, accessSecret)
+
+	livemanager := live.NewLiveManager(cred)
+
+	id := "0f4f319ef71a4d9ea2a54a91a9d27f19"
+	templateRsp, err := livemanager.StopPullLiveChannel(id)
+
+	if err != nil {
+		//t.Error("sign error ")
+		t.Errorf(err.Error())
+	}
+
+	fmt.Println(templateRsp)
+}
+
+func TestStopRecordLiveChannel(t *testing.T) {
+
+	accessKey := "275ee3cd-6fb"
+	accessSecret := "5GcXHNYdAVVdFW0yervG"
+
+	if TestAccessKey != "" {
+		accessKey = TestAccessKey
+		accessSecret = TestSecretKey
+	}
+
+	fmt.Println(accessKey)
+	fmt.Println(accessSecret)
+
+	cred := auth.New(accessKey, accessSecret)
+
+	livemanager := live.NewLiveManager(cred)
+
+	channelID := "0f4f319ef71a4d9ea2a54a91a9d27f19"
+	outputGroupID := "0f4f319ef71a4d9ea2a54a91a9d27f19"
+	templateRsp, err := livemanager.StopRecordLiveChannel(channelID, outputGroupID)
+
+	if err != nil {
+		//t.Error("sign error ")
+		t.Errorf(err.Error())
+	}
+
+	fmt.Println(templateRsp)
+}
+func TestStartRecordLiveChannel(t *testing.T) {
+
+	accessKey := "275ee3cd-6fb"
+	accessSecret := "5GcXHNYdAVVdFW0yervG"
+
+	if TestAccessKey != "" {
+		accessKey = TestAccessKey
+		accessSecret = TestSecretKey
+	}
+
+	fmt.Println(accessKey)
+	fmt.Println(accessSecret)
+
+	cred := auth.New(accessKey, accessSecret)
+
+	livemanager := live.NewLiveManager(cred)
+
+	channelID := "0f4f319ef71a4d9ea2a54a91a9d27f19"
+	outputGroupID := "0f4f319ef71a4d9ea2a54a91a9d27f19"
+	templateRsp, err := livemanager.StartRecordLiveChannel(channelID, outputGroupID)
 
 	if err != nil {
 		//t.Error("sign error ")

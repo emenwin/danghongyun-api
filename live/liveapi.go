@@ -345,3 +345,305 @@ func (m *DHLiveManager) DeleteLivelogo(livelogo Livelogo) (*LivelogoRespParam, e
 
 	return &respLivelogo, nil
 }
+
+//GetPageLivechannels 分页查询直播频道
+func (m *DHLiveManager) GetPageLivechannels(searchLivechannel SearchLivechannelParam) (*LivechannelListRespParam, error) {
+
+	params := m.Credentials.NewSignParams("liveGetChannelsByPage", Version, "")
+
+	if searchLivechannel.Start != 0 {
+		params["start"] = strconv.Itoa(searchLivechannel.Start)
+	}
+	if searchLivechannel.Number != 0 {
+		params["number"] = strconv.Itoa(searchLivechannel.Number)
+	}
+
+	if searchLivechannel.Sort != "" {
+		params["sort"] = searchLivechannel.Sort
+	}
+
+	if searchLivechannel.Order != "" {
+		params["order"] = searchLivechannel.Order
+	}
+
+	if searchLivechannel.SearchType != "" {
+		params["searchType"] = searchLivechannel.SearchType
+	}
+
+	if searchLivechannel.Keyword != "" {
+		params["keyword"] = searchLivechannel.Keyword
+	}
+
+	queryparam, _ := m.Credentials.SignExt(params)
+
+	url := LiveRestAPIURL + "?" + queryparam
+	var respLivechannel LivechannelListRespParam
+
+	err := m.Client.CallWithJSONQuery(context.Background(),
+		&respLivechannel, "GET", url, nil, nil)
+
+	if nil != err {
+		return nil, err
+	}
+
+	return &respLivechannel, nil
+}
+
+//GetLivechannelByID 根据ID查询数据
+func (m *DHLiveManager) GetLivechannelByID(id string) (*LivechannelRespParam, error) {
+
+	params := m.Credentials.NewSignParams("liveGetChannelById", Version, "")
+
+	params["id"] = id
+
+	queryparam, _ := m.Credentials.SignExt(params)
+
+	url := LiveRestAPIURL + "?" + queryparam
+	var respLivechannel LivechannelRespParam
+
+	err := m.Client.CallWithJSONQuery(context.Background(),
+		&respLivechannel, "GET", url, nil, nil)
+
+	if nil != err {
+		return nil, err
+	}
+
+	return &respLivechannel, nil
+}
+
+//GetLivechannelsPlayURL 获取直播频道地址
+func (m *DHLiveManager) GetLivechannelsPlayURL(channelID string) (*LivechannelRespParam, error) {
+
+	params := m.Credentials.NewSignParams("liveGetChannelsPlayUrl", Version, "")
+
+	params["channelId"] = channelID
+
+	queryparam, _ := m.Credentials.SignExt(params)
+
+	url := LiveRestAPIURL + "?" + queryparam
+	var respLivechannel LivechannelRespParam
+
+	err := m.Client.CallWithJSONQuery(context.Background(),
+		&respLivechannel, "GET", url, nil, nil)
+
+	if nil != err {
+		return nil, err
+	}
+
+	return &respLivechannel, nil
+}
+
+// CreateLivechannel 创建直播频道
+func (m *DHLiveManager) CreateLivechannel(param CreateOrUpdatechannelParam) (*LivechannelRespParam, error) {
+
+	params := m.Credentials.NewSignParams("liveCreateChannel", Version, "")
+
+	queryparam, _ := m.Credentials.SignExt(params)
+	url := LiveRestAPIURL + "?" + queryparam
+
+	var respLivechannel LivechannelRespParam
+	liveChannel := CreateOrUpdatechannelParam{}
+	liveChannel.Name = param.Name
+	liveChannel.SignalType = param.SignalType
+	liveChannel.PullStream = param.PullStream
+	liveChannel.Type = param.Type
+	liveChannel.TypeName = param.TypeName
+	liveChannel.LiveType = param.LiveType
+	liveChannel.OutputGroupList = param.OutputGroupList
+
+	err := m.Client.CallWithJSON(context.Background(),
+		&respLivechannel, "POST", url, nil, liveChannel)
+
+	if nil != err {
+		return nil, err
+	}
+
+	return &respLivechannel, nil
+}
+
+// EditLivechannel 修改直播频道
+func (m *DHLiveManager) EditLivechannel(param CreateOrUpdatechannelParam) (*LivechannelRespParam, error) {
+
+	params := m.Credentials.NewSignParams("liveUpdate", Version, "")
+
+	queryparam, _ := m.Credentials.SignExt(params)
+	url := LiveRestAPIURL + "?" + queryparam
+
+	var respLivechannel LivechannelRespParam
+	liveChannel := CreateOrUpdatechannelParam{}
+	liveChannel.ID = param.ID
+	liveChannel.Name = param.Name
+	liveChannel.SignalType = param.SignalType
+	liveChannel.PullStream = param.PullStream
+	liveChannel.Type = param.Type
+	liveChannel.TypeName = param.TypeName
+	liveChannel.LiveType = param.LiveType
+	liveChannel.OutputGroupList = param.OutputGroupList
+
+	err := m.Client.CallWithJSON(context.Background(),
+		&respLivechannel, "POST", url, nil, liveChannel)
+
+	if nil != err {
+		return nil, err
+	}
+
+	return &respLivechannel, nil
+}
+
+// DeleteLivechannel 删除 批量删除直播频道
+//唯一标识，多个id用“,”分隔
+func (m *DHLiveManager) DeleteLivechannel(ids string) (*LivechannelRespParam, error) {
+
+	params := m.Credentials.NewSignParams("liveDelete", Version, "")
+	params["ids"] = ids
+	queryparam, _ := m.Credentials.SignExt(params)
+	url := LiveRestAPIURL + "?" + queryparam
+
+	var respLivelogo LivechannelRespParam
+
+	err := m.Client.CallWithForm(context.Background(),
+		&respLivelogo, "POST", url, nil, nil)
+
+	if nil != err {
+		return nil, err
+	}
+
+	return &respLivelogo, nil
+}
+
+// SetLiveCallback 设置的直播频道状态变化回调地址
+func (m *DHLiveManager) SetLiveCallback(value string) (*LivechannelRespParam, error) {
+	params := m.Credentials.NewSignParams("setLiveCallback", Version, "")
+	params["value"] = value
+	queryparam, _ := m.Credentials.SignExt(params)
+	url := LiveRestAPIURL + "?" + queryparam
+
+	var respLivelogo LivechannelRespParam
+
+	err := m.Client.CallWithForm(context.Background(),
+		&respLivelogo, "POST", url, nil, nil)
+
+	if nil != err {
+		return nil, err
+	}
+
+	return &respLivelogo, nil
+}
+
+//StartLiveChannel 开始直播
+func (m *DHLiveManager) StartLiveChannel(id string) (*LivechannelRespParam, error) {
+	params := m.Credentials.NewSignParams("liveStartChannel", Version, "")
+	params["id"] = id
+	queryparam, _ := m.Credentials.SignExt(params)
+	url := LiveRestAPIURL + "?" + queryparam
+
+	var respLivelogo LivechannelRespParam
+
+	err := m.Client.CallWithForm(context.Background(),
+		&respLivelogo, "POST", url, nil, nil)
+
+	if nil != err {
+		return nil, err
+	}
+
+	return &respLivelogo, nil
+}
+
+//StopLiveChannel 结束直播
+func (m *DHLiveManager) StopLiveChannel(id string) (*LivechannelRespParam, error) {
+	params := m.Credentials.NewSignParams("liveStopChannel", Version, "")
+	params["id"] = id
+	queryparam, _ := m.Credentials.SignExt(params)
+	url := LiveRestAPIURL + "?" + queryparam
+
+	var respLivelogo LivechannelRespParam
+
+	err := m.Client.CallWithForm(context.Background(),
+		&respLivelogo, "POST", url, nil, nil)
+
+	if nil != err {
+		return nil, err
+	}
+
+	return &respLivelogo, nil
+}
+
+//StartPullLiveChannel 开始直播拉流
+func (m *DHLiveManager) StartPullLiveChannel(id string) (*LivechannelRespParam, error) {
+	params := m.Credentials.NewSignParams("liveStartChannelPull", Version, "")
+	params["id"] = id
+	queryparam, _ := m.Credentials.SignExt(params)
+	url := LiveRestAPIURL + "?" + queryparam
+
+	var respLivelogo LivechannelRespParam
+
+	err := m.Client.CallWithForm(context.Background(),
+		&respLivelogo, "POST", url, nil, nil)
+
+	if nil != err {
+		return nil, err
+	}
+
+	return &respLivelogo, nil
+}
+
+//StopPullLiveChannel 结束直播拉流
+func (m *DHLiveManager) StopPullLiveChannel(id string) (*LivechannelRespParam, error) {
+	params := m.Credentials.NewSignParams("liveStopChannelPull", Version, "")
+	params["id"] = id
+	queryparam, _ := m.Credentials.SignExt(params)
+	url := LiveRestAPIURL + "?" + queryparam
+
+	var respLivelogo LivechannelRespParam
+
+	err := m.Client.CallWithForm(context.Background(),
+		&respLivelogo, "POST", url, nil, nil)
+
+	if nil != err {
+		return nil, err
+	}
+
+	return &respLivelogo, nil
+}
+
+//StartRecordLiveChannel 开始录制
+///channelId	直播频道id	String	必选
+//outputGroupId	直播频道输出组id 必选
+func (m *DHLiveManager) StartRecordLiveChannel(channelID, outputGroupID string) (*LivechannelRespParam, error) {
+	params := m.Credentials.NewSignParams("liveStartChannelRecord", Version, "")
+	params["channelId"] = channelID
+	params["outputGroupId"] = outputGroupID
+	queryparam, _ := m.Credentials.SignExt(params)
+	url := LiveRestAPIURL + "?" + queryparam
+
+	var respLivelogo LivechannelRespParam
+
+	err := m.Client.CallWithForm(context.Background(),
+		&respLivelogo, "POST", url, nil, nil)
+
+	if nil != err {
+		return nil, err
+	}
+
+	return &respLivelogo, nil
+}
+
+//StopRecordLiveChannel 结束录制
+func (m *DHLiveManager) StopRecordLiveChannel(channelID, outputGroupID string) (*LivechannelRespParam, error) {
+	params := m.Credentials.NewSignParams("liveStopChannelRecord", Version, "")
+	params["channelId"] = channelID
+	params["outputGroupId"] = outputGroupID
+	queryparam, _ := m.Credentials.SignExt(params)
+	url := LiveRestAPIURL + "?" + queryparam
+
+	var respLivelogo LivechannelRespParam
+
+	err := m.Client.CallWithForm(context.Background(),
+		&respLivelogo, "POST", url, nil, nil)
+
+	if nil != err {
+		return nil, err
+	}
+
+	return &respLivelogo, nil
+}
