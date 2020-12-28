@@ -666,7 +666,8 @@ func (m *DHLiveManager) EditLiveTimeshift(timeshift int, playURL string) (*Livec
 }
 
 //BackLiveTime 回看
-//要时移的时间点与当前时间的差值，负整数，单位秒
+//回看2018-01-01 12:00:00 ~ 2018-01-01 12:30:00 半小时内的视频内容
+//beginTime=20180101040000&endTime=20180101043000
 func (m *DHLiveManager) BackLiveTime(beginTime, endTime, playURL string) (*LivechannelRespParam, error) {
 	url := playURL + "?beginTime=" + beginTime + "&endTime=" + endTime
 
