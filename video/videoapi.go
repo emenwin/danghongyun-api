@@ -1,8 +1,12 @@
 package video
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"io/ioutil"
+	"mime/multipart"
+	"net/http"
 	"strconv"
 
 	"github.com/emenwin/danghongyun-api/auth"
@@ -82,11 +86,16 @@ func (ctl *DHLiveManager) GetVideos(searchParams SearchVideoParam) (*VideoListRe
 	params["sort"] = searchParams.Sort
 	params["number"] = searchParams.Number
 	params["order"] = searchParams.Order
-	params["searchType"] = searchParams.SearchType
+	if searchParams.SearchType != "" {
+		params["searchType"] = searchParams.SearchType
+	}
+	if searchParams.Keyword != "" {
+		params["keyword"] = searchParams.Keyword
+	}
+
 	params["categoryID"] = strconv.Itoa(searchParams.CategoryID)
 	params["videoType"] = strconv.Itoa(searchParams.VideoType)
 	params["status"] = strconv.Itoa(searchParams.Status)
-	params["keyword"] = searchParams.Keyword
 
 	queryparam, _ := ctl.Credentials.SignExt(params)
 	url := LiveRestAPIURL + "?" + queryparam
@@ -496,6 +505,142 @@ func (ctl *DHLiveManager) DeleteLogoGroup(ids string) (*LogoGroupInfoRespParam, 
 	params := ctl.Credentials.NewSignParams("deleteLogoGroup", Version, "")
 	params["ids"] = ids
 
+	queryparam, _ := ctl.Credentials.SignExt(params)
+	url := LiveRestAPIURL + "?" + queryparam
+	var respTempalte LogoGroupInfoRespParam
+	err := ctl.Client.CallWithJSON(context.Background(),
+		&respTempalte, "POST", url, nil, nil)
+
+	if nil != err {
+		return nil, err
+	}
+
+	return &respTempalte, nil
+}
+
+//SecondTranscode 二次转码
+func (ctl *DHLiveManager) SecondTranscode(param SecondTranscode) (*LogoGroupInfoRespParam, error) {
+	params := ctl.Credentials.NewSignParams("secondTranscode", Version, "")
+	params["videoIds"] = param.VideoIds
+	params["videoType"] = strconv.Itoa(param.VideoType)
+	params["encrypt"] = strconv.FormatBool(param.Encrypt)
+	params["replace"] = strconv.FormatBool(param.Replace)
+	params["transcodeTemplates"] = param.TranscodeTemplates
+
+	queryparam, _ := ctl.Credentials.SignExt(params)
+	url := LiveRestAPIURL + "?" + queryparam
+	var respTempalte LogoGroupInfoRespParam
+	err := ctl.Client.CallWithJSON(context.Background(),
+		&respTempalte, "POST", url, nil, nil)
+
+	if nil != err {
+		return nil, err
+	}
+
+	return &respTempalte, nil
+}
+
+//SecondTranscodeV2 二次转码
+func (ctl *DHLiveManager) SecondTranscodeV2(param SecondTranscodeV2) (*LogoGroupInfoRespParam, error) {
+	params := ctl.Credentials.NewSignParams("secondTranscodeV2", Version, "")
+	params["videoIds"] = param.VideoIds
+	params["videoType"] = strconv.Itoa(param.VideoType)
+	params["trailorDuration"] = strconv.Itoa(param.TrailorDuration)
+	params["transcodeTemplateGroupId"] = strconv.Itoa(param.TranscodeTemplateGroupID)
+	params["trailor"] = strconv.FormatBool(param.Trailor)
+	params["replace"] = strconv.FormatBool(param.Replace)
+	params["transcodeTemplates"] = param.TranscodeTemplates
+
+	queryparam, _ := ctl.Credentials.SignExt(params)
+	url := LiveRestAPIURL + "?" + queryparam
+	var respTempalte LogoGroupInfoRespParam
+	err := ctl.Client.CallWithJSON(context.Background(),
+		&respTempalte, "POST", url, nil, nil)
+
+	if nil != err {
+		return nil, err
+	}
+
+	return &respTempalte, nil
+}
+
+//UploadVideo 文件上传
+func (ctl *DHLiveManager) UploadVideo() string {
+
+	var buff bytes.Buffer
+	writer := multipart.NewWriter(&buff)
+	writer.WriteField("token", "b7265bc6b9cdddd71b31949806336b36")
+	w, _ := writer.CreateFormFile("file", "http://vjs.zencdn.net/v/oceans.mp4")
+	w.Write([]byte("this is a file"))
+	writer.Close()
+	var client http.Client
+	targetUrl := "http://upload.danghongyun.com/multipart/upload?"
+	resp, err := client.Post(targetUrl, writer.FormDataContentType(), &buff)
+	if err != nil {
+		fmt.Println(err)
+
+	}
+
+	defer resp.Body.Close()
+
+	fmt.Println("==========jsons=======", resp)
+	data, _ := ioutil.ReadAll(resp.Body)
+	fmt.Println(data)
+	return string(data)
+
+}
+
+//InitMultipartUpload 多线程上传初始化
+func (ctl *DHLiveManager) InitMultipartUpload(param UploadInitMultipart) (*UploadInitMultipartRespParam, error) {
+	params := make(map[string]string)
+	params["token"] = "b7265bc6b9cdddd71b31949806336b36"
+	params["fileName"] = param.FileName
+	params["fileSize"] = strconv.Itoa(param.FileSize)
+	if param.FileMD5 != "" {
+		params["fileMD5"] = param.FileMD5
+	}
+
+	params["type"] = param.Type
+
+	queryparam, _ := ctl.Credentials.SignExt(params)
+	url := "http://upload.danghongyun.com/multipart/initMultipartUpload?" + queryparam
+	var respTempalte UploadInitMultipartRespParam
+	err := ctl.Client.CallWithJSON(context.Background(),
+		&respTempalte, "POST", url, nil, nil)
+
+	if nil != err {
+		return nil, err
+	}
+
+	return &respTempalte, nil
+}
+
+//MultipartUpload 上传分块文件
+func (ctl *DHLiveManager) MultipartUpload(param UploadMultipart) (*UploadInitMultipartRespParam, error) {
+	params := make(map[string]string)
+	params["token"] = "b7265bc6b9cdddd71b31949806336b36"
+	params["uploadId"] = param.UploadID
+	params["chunkIndex"] = strconv.Itoa(param.ChunkIndex)
+	params["chunkMD5"] = param.ChunkMD5
+	params["chunkSize"] = strconv.Itoa(param.ChunkSize)
+
+	queryparam, _ := ctl.Credentials.SignExt(params)
+	url := "http://upload.danghongyun.com/multipart/multipartUpload?" + queryparam
+	var respTempalte UploadInitMultipartRespParam
+	err := ctl.Client.CallWithJSON(context.Background(),
+		&respTempalte, "POST", url, nil, nil)
+
+	if nil != err {
+		return nil, err
+	}
+
+	return &respTempalte, nil
+}
+
+//SetCallbackURLl 设置上传回调地址
+func (ctl *DHLiveManager) SetCallbackURLl(callbackURL string) (*LogoGroupInfoRespParam, error) {
+	params := ctl.Credentials.NewSignParams("setCallbackUrl", Version, "")
+	params["callbackUrl"] = callbackURL
 	queryparam, _ := ctl.Credentials.SignExt(params)
 	url := LiveRestAPIURL + "?" + queryparam
 	var respTempalte LogoGroupInfoRespParam

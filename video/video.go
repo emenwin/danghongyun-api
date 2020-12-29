@@ -1,6 +1,8 @@
 package video
 
-import "mime/multipart"
+import (
+	"mime/multipart"
+)
 
 //Video 视频Video
 type Video struct {
@@ -134,4 +136,67 @@ type UploadVideoParams struct {
 	FrameInterval            int            `json:"frameInterval"`            //抽帧的时间间隔（秒），如果抽帧，则需要设置该参数值
 	Tag                      string         `json:"tag"`                      //上传视频后存储的视频标签，用于检索
 	URL                      string         `json:"url"`
+}
+
+// UploadInitMultipart 视频上传参数
+type UploadInitMultipart struct {
+	Token    string `json:"token"`    //令牌
+	Type     string `json:"type"`     //文件类型FileName
+	FileMD5  string `json:"fileMD5"`  //文件的MD5值，若不提供文件的MD5值，则不会校验合并后的文件MD5值
+	FileSize int    `json:"fileSize"` //文件大小
+	FileName string `json:"fileName"` //文件名称
+}
+
+type UploadInitMultipartRespParam struct {
+	Code    int    `json:"code"`    // 整型错误码，0成功，其它值失败
+	Message string `json:"message"` // 字符串，可能包含错误或者别的一些信息
+	Success bool   `json:"success"` // true 或 false
+	Result  string `json:"result"`  // 字符串，返回的结果
+}
+
+type UploadMultipart struct {
+	Token           string `json:"token"`           //令牌
+	UploadID        string `json:"uploadId"`        // 上传唯一标识
+	ChunkMD5        string `json:"chunkMD5"`        //分块文件的MD5值
+	ChunkIndex      int    `json:"chunkIndex"`      //分块文件序列
+	ChunkSize       int    `json:"chunkSize"`       //分块文件大小
+	FileInputStream int64  `json:"fileInputStream"` //文件流
+
+}
+
+type SecondTranscode struct {
+	VideoIds           string `json:"videoIds"`           //视频id，多个id以逗号隔开，
+	TranscodeTemplates string `json:"transcodeTemplates"` //视频id，多个id以逗号隔开，
+	VideoType          int    `json:"videoType"`          //视频转码类型，0 普通视频转码，1 VR转码
+	Replace            bool   `json:"replace"`            //0 另存为，1 替换
+	Encrypt            bool   `json:"encrypt"`            //是否加密，0 非加密，1 加密
+
+}
+
+type TranscodeTemplates struct {
+	Name           string `json:"name"`         //模板名字
+	VideoWidth     int    `json:"videoWidth"`   //视频宽度
+	VideoHeight    int    `json:"videoHeight"`  //视频高度
+	VideoBitrate   int    `json:"videoBitrate"` //视频比特率，例如1000为1000kbps
+	AudioBitrate   int    `json:"audioBitrate"` //音频比特率，例如64000为64kbps
+	HLS            bool   `json:"hls"`
+	Mp4            bool   `json:"mp4"`
+	Flv            bool   `json:"flv"`
+	Ts             bool   `json:"ts"`
+	DefaultVideo   int    `json:"defaultVideo"` //1 默认播放模板，0 非默认
+	HLSEncryptType int    `json:"hlsEncryptType"`
+	Mp4EncryptType int    `json:"mp4EncryptType"`
+	FlvEncryptType int    `json:"flvEncryptType"`
+	TsEncryptType  int    `json:"tsEncryptType"`
+}
+
+type SecondTranscodeV2 struct {
+	VideoIds                 string `json:"videoIds"`                 //视频id，多个id以逗号隔开，
+	TranscodeTemplates       string `json:"transcodeTemplates"`       //视频id，多个id以逗号隔开，
+	VideoType                int    `json:"videoType"`                //视频转码类型，0 普通视频转码，1 VR转码
+	TranscodeTemplateGroupID int    `json:"transcodeTemplateGroupId"` //视频转码类型，0 普通视频转码，1 VR转码
+	TrailorDuration          int    `json:"trailorDuration"`          //视频转码类型，0 普通视频转码，1 VR转码
+	Replace                  bool   `json:"replace"`                  //0 另存为，1 替换
+	Trailor                  bool   `json:"trailor"`                  //是否加密，0 非加密，1 加密
+
 }

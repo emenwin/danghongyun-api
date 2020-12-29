@@ -389,3 +389,80 @@ func TestDeleteLogoGroup(t *testing.T) {
 
 	fmt.Println(templateRsp)
 }
+
+func TestUploadVideo(t *testing.T) {
+	accessKey := "275ee3cd-6fb"
+	accessSecret := "5GcXHNYdAVVdFW0yervG"
+
+	if TestAccessKey != "" {
+		accessKey = TestAccessKey
+		accessSecret = TestSecretKey
+	}
+
+	fmt.Println(accessKey)
+	fmt.Println(accessSecret)
+
+	cred := auth.New(accessKey, accessSecret)
+
+	livemanager := video.NewLiveManager(cred)
+	templateRsp := livemanager.UploadVideo()
+
+	fmt.Println(templateRsp)
+}
+
+func TestGetVideoInfo(t *testing.T) {
+	accessKey := "275ee3cd-6fb"
+	accessSecret := "5GcXHNYdAVVdFW0yervG"
+
+	if TestAccessKey != "" {
+		accessKey = TestAccessKey
+		accessSecret = TestSecretKey
+	}
+
+	fmt.Println(accessKey)
+	fmt.Println(accessSecret)
+
+	cred := auth.New(accessKey, accessSecret)
+
+	livemanager := video.NewLiveManager(cred)
+	videoID := "d4b1a89df5b54135bd33a524f8518be9"
+
+	templateRsp, err := livemanager.GetVideoInfo(videoID)
+
+	if err != nil {
+		//t.Error("sign error ")
+		t.Errorf(err.Error())
+	}
+
+	fmt.Println(templateRsp)
+}
+
+func TestInitMultipartUpload(t *testing.T) {
+	accessKey := "275ee3cd-6fb"
+	accessSecret := "5GcXHNYdAVVdFW0yervG"
+
+	if TestAccessKey != "" {
+		accessKey = TestAccessKey
+		accessSecret = TestSecretKey
+	}
+
+	fmt.Println(accessKey)
+	fmt.Println(accessSecret)
+
+	cred := auth.New(accessKey, accessSecret)
+
+	livemanager := video.NewLiveManager(cred)
+	param := video.UploadInitMultipart{}
+	param.FileName = "1"
+	param.FileSize = 100
+	param.Type = "0"
+
+	templateRsp, err := livemanager.InitMultipartUpload(param)
+
+	if err != nil {
+		//t.Error("sign error ")
+		t.Errorf(err.Error())
+	}
+
+	fmt.Println(templateRsp)
+}
