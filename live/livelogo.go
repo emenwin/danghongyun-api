@@ -11,7 +11,7 @@ type Livelogo struct {
 	OffsetHeight int    `json:"offsetHeight"` //台标左上角距离视频顶部的距离(高度以360为基准，实际输出会按照倍率计算)
 	Opacity      int    `json:"opacity"`      //透明度
 	Resize       int    `json:"resize"`       //基于原图的放大倍数，例：100为保持原图大小 50为缩小一倍
-	HttpUrl      int    `json:"httpUrl"`      //台标访问地址
+	HttpUrl      string `json:"httpUrl"`      //台标访问地址
 	Uri          string `json:"uri"`          //台标路径
 }
 
