@@ -66,7 +66,7 @@ func TestGetTemplates(t *testing.T) {
 
 	livemanager := live.NewLiveManager(cred)
 
-	templateRsp, err := livemanager.GetTemplates("VR高清", "2", 2)
+	templateRsp, err := livemanager.GetTemplates("", "", 0)
 
 	if err != nil {
 		//t.Error("sign error ")
@@ -445,7 +445,7 @@ func TestGetLivechannelByID(t *testing.T) {
 	cred := auth.New(accessKey, accessSecret)
 
 	livemanager := live.NewLiveManager(cred)
-	id := "4c773ac9b0ac4917ab203cd66f18b398"
+	id := "338f277869454810bdea06c060fa5d53"
 
 	templateRsp, err := livemanager.GetLivechannelByID(id)
 
@@ -476,7 +476,7 @@ func TestGetLivechannelPlayURL(t *testing.T) {
 	cred := auth.New(accessKey, accessSecret)
 
 	livemanager := live.NewLiveManager(cred)
-	id := "0f4f319ef71a4d9ea2a54a91a9d27f19"
+	id := "39cc0761445b4de0ad9a937075f0b04e"
 
 	templateRsp, err := livemanager.GetLivechannelsPlayURL(id)
 
@@ -511,12 +511,9 @@ func TestCreateLivechannel(t *testing.T) {
 
 	livechannel := live.CreateOrUpdatechannelParam{}
 	rd := rand.New(rand.NewSource(time.Now().UnixNano()))
-	livechannel.Name = fmt.Sprintf("添加直播频道 ---  测试 %d", rd.Intn(99999))
+	livechannel.Name = fmt.Sprintf("添加直播频道20200107 ---  测试 %d", rd.Intn(99999))
 	livechannel.SignalType = "1"
-	livechannel.PullStream = ""
 	livechannel.LiveType = 0
-	livechannel.TypeName = "类型名称--测试--添加"
-	livechannel.Type = "3daa3949c294456ab40273ab2d8afba1"
 	templateList := []live.CreateTemplateList{
 		{
 			TemplateID: "4a8235f0ad80496b940c44e1436dff87",
@@ -525,7 +522,7 @@ func TestCreateLivechannel(t *testing.T) {
 	}
 	grouList := []live.CreateGroupList{
 		{
-			ProtocolType:            1,
+			ProtocolType:            2,
 			RtmpThirdPartyOutputURL: "",
 			Rotation:                "90",
 			IsRecord:                "1",
@@ -567,9 +564,9 @@ func TestEditLivechannel(t *testing.T) {
 	livemanager := live.NewLiveManager(cred)
 
 	livechannel := live.CreateOrUpdatechannelParam{}
-	livechannel.ID = "4c773ac9b0ac4917ab203cd66f18b398"
+	livechannel.ID = "6fc646b57e444068a2237f3f5870880f"
 	rd := rand.New(rand.NewSource(time.Now().UnixNano()))
-	livechannel.Name = fmt.Sprintf("修改直播频道 ---  测试 %d", rd.Intn(99999))
+	livechannel.Name = fmt.Sprintf("修改直播频道20200107 ---  测试 %d", rd.Intn(99999))
 	livechannel.SignalType = "1"
 	livechannel.PullStream = ""
 	livechannel.LiveType = 0
@@ -680,7 +677,7 @@ func TestStartLiveChannel(t *testing.T) {
 
 	livemanager := live.NewLiveManager(cred)
 
-	id := "0f4f319ef71a4d9ea2a54a91a9d27f19"
+	id := "39cc0761445b4de0ad9a937075f0b04e"
 	templateRsp, err := livemanager.StartLiveChannel(id)
 
 	if err != nil {

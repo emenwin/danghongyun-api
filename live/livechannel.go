@@ -56,7 +56,7 @@ type OutputGroup struct {
 	RtmpThirdPartyOutputURL string       `json:"rtmpThirdPartyOutputUrl"` //rtmp第三方输出地址
 	IsRecord                string       `json:"isRecord"`                //是否录制，0.否 1.是
 	RecordTaskID            string       `json:"recordTaskId"`            //当前录制任务id
-	RecordStartTime         string       `json:"recordStartTime"`         //录制开始时间
+	RecordStartTime         int          `json:"recordStartTime"`         //录制开始时间
 	NeedToMp4               string       `json:"needToMp4"`               //录制的文件是否转mp4，1.是 0.否
 	IsTimeShift             string       `json:"isTimeShift"`             //是否时移，0.否 1.是
 	TimeShiftDuration       string       `json:"timeShiftDuration"`       //时移时长，单位小时
@@ -142,6 +142,7 @@ type CreateOrUpdatechannelParam struct {
 
 //CreateGroupList 创建频道组
 type CreateGroupList struct {
+	ID                      string               `json:"id"`                      //输出组id
 	RtmpThirdPartyOutputURL string               `json:"rtmpThirdPartyOutputUrl"` //rtmp第三方输出地址
 	IsRecord                string               `json:"isRecord"`                //是否录制，0.否 1.是
 	ProtocolType            int                  `json:"protocolType"`

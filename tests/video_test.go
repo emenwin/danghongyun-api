@@ -425,7 +425,7 @@ func TestGetVideoInfo(t *testing.T) {
 	cred := auth.New(accessKey, accessSecret)
 
 	livemanager := video.NewLiveManager(cred)
-	videoID := "d4b1a89df5b54135bd33a524f8518be9"
+	videoID := "9d964565de8c4e979db44b9760c253a3"
 
 	templateRsp, err := livemanager.GetVideoInfo(videoID)
 
