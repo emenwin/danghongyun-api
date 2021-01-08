@@ -93,9 +93,17 @@ func (ctl *DHLiveManager) GetVideos(searchParams SearchVideoParam) (*VideoListRe
 		params["keyword"] = searchParams.Keyword
 	}
 
-	params["categoryID"] = strconv.Itoa(searchParams.CategoryID)
-	params["videoType"] = strconv.Itoa(searchParams.VideoType)
-	params["status"] = strconv.Itoa(searchParams.Status)
+	if searchParams.CategoryID != -1 {
+		params["categoryId"] = strconv.Itoa(searchParams.CategoryID)
+	}
+
+	if searchParams.VideoType != -1 {
+		params["videoType"] = strconv.Itoa(searchParams.VideoType)
+	}
+
+	if searchParams.Status != -1 {
+		params["status"] = strconv.Itoa(searchParams.Status)
+	}
 
 	queryparam, _ := ctl.Credentials.SignExt(params)
 	url := LiveRestAPIURL + "?" + queryparam

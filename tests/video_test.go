@@ -77,10 +77,15 @@ func TestGetVideos(t *testing.T) {
 
 	livemanager := video.NewLiveManager(cred)
 	searchParams := video.SearchVideoParam{}
-	searchParams.Start = "1"
+	searchParams.Start = "0"
 	searchParams.Number = "10"
-	searchParams.Sort = "title"
+	searchParams.Sort = "tag"
 	searchParams.Order = "desc"
+	searchParams.SearchType = "tag"
+	searchParams.Keyword = "338f277869454810bdea06c060fa5d53"
+	searchParams.CategoryID = -1
+	searchParams.Status = -1
+	searchParams.VideoType = -1
 
 	templateRsp, err := livemanager.GetVideos(searchParams)
 
