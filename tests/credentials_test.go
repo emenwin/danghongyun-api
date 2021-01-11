@@ -8,6 +8,7 @@ import (
 )
 
 func TestSign(t *testing.T) {
+
 	accessKey := "a020e193-0f1"
 	accessSecret := "5GcXHNYdAVVdFW0yervG"
 
