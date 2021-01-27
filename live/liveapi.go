@@ -449,6 +449,7 @@ func (m *DHLiveManager) CreateLivechannel(param CreateOrUpdatechannelParam) (*Li
 	liveChannel.Type = param.Type
 	liveChannel.TypeName = param.TypeName
 	liveChannel.LiveType = param.LiveType
+	liveChannel.FillInfo = param.FillInfo
 	liveChannel.OutputGroupList = param.OutputGroupList
 
 	err := m.Client.CallWithJSON(context.Background(),
@@ -478,6 +479,7 @@ func (m *DHLiveManager) EditLivechannel(param CreateOrUpdatechannelParam) (*Live
 	liveChannel.Type = param.Type
 	liveChannel.TypeName = param.TypeName
 	liveChannel.LiveType = param.LiveType
+	liveChannel.FillInfo = param.FillInfo
 	liveChannel.OutputGroupList = param.OutputGroupList
 
 	err := m.Client.CallWithJSON(context.Background(),

@@ -33,6 +33,7 @@ type Livechannel struct {
 	TypeName           string        `json:"typeName"`         //频道类型名称
 	DeviceID           string        `json:"deviceId"`         //设备id-与库管系统的设备进行绑定
 	OutputGroupList    []OutputGroup `json:"outputGroupList"`  //输出组信息列表
+	FillInfo           FillInfo      `json:"fillInfo"`         //垫片信息
 
 }
 
@@ -62,6 +63,17 @@ type OutputGroup struct {
 	TimeShiftDuration       string       `json:"timeShiftDuration"`       //时移时长，单位小时
 	TimeShiftTaskID         string       `json:"timeShiftTaskId"`         //时移任务Id
 	Rotation                string       `json:"rotation"`                //旋转度数
+	IsFastEdit              string       `json:"isFastEdit"`              //是否快编，0.否 1.是
+}
+
+//FillInfo  垫片信息
+type FillInfo struct {
+	FileType     int    `json:"fileType"`     //垫片类型，0-图片，1-点播，目前api方式暂时只支持1
+	FileID       string `json:"fileId"`       //垫片类型为1时，此值为点播视频的视频id
+	FileHTTPURL  string `json:"fileHttpUrl"`  //垫片类型为1时，此值为点播视频的播放地址
+	FileLocalURL string `json:"fileLocalUrl"` //垫片类型为1时，此值为点播视频的播放地址
+	FileImgURL   string `json:"fileImgUrl"`   //此值为点播视频的封面图地址
+
 }
 
 //LiveOutput 输出信息
@@ -134,10 +146,11 @@ type CreateOrUpdatechannelParam struct {
 	Name            string            `json:"name"`
 	SignalType      string            `json:"signalType"`
 	LiveType        int               `json:"liveType"`
-	PullStream      string            `json:"pullStream"` //拉流地址，源流类型为拉流时必填
-	Type            string            `json:"type"`       //频道类型id
-	TypeName        string            `json:"typeName"`   //类型名称
-	OutputGroupList []CreateGroupList `json:"outputGroupList"`
+	PullStream      string            `json:"pullStream"`      //拉流地址，源流类型为拉流时必填
+	Type            string            `json:"type"`            //频道类型id
+	TypeName        string            `json:"typeName"`        //类型名称
+	OutputGroupList []CreateGroupList `json:"outputGroupList"` //输出组信息
+	FillInfo        FillInfo          `json:"fillInfo"`        // 垫片信息
 }
 
 //CreateGroupList 创建频道组
@@ -150,8 +163,9 @@ type CreateGroupList struct {
 	TimeShiftDuration       string               `json:"timeShiftDuration,omitempty"`
 	IsLiveEncrypt           string               `json:"isLiveEncrypt,omitempty"`
 	LogoID                  string               `json:"logoId,omitempty"`
-	Rotation                string               `json:"rotation"`  //旋转度数
-	NeedToMp4               string               `json:"needToMp4"` //录制的文件是否转mp4，1.是 0.否
+	Rotation                string               `json:"rotation"`   //旋转度数
+	NeedToMp4               string               `json:"needToMp4"`  //录制的文件是否转mp4，1.是 0.否
+	IsFastEdit              string               `json:"isFastEdit"` //是否快编，0.否 1.是
 	OutputTemplateList      []CreateTemplateList `json:"outputTemplateList"`
 }
 

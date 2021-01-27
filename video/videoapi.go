@@ -211,17 +211,28 @@ func (ctl *DHLiveManager) GetVideoStatus(videoID string) (*VideoInfoRespParam, e
 }
 
 //GetVideoCount 视频数量
-func (ctl *DHLiveManager) GetVideoCount(searchParams SearchVideoParam) (*VideoInfoRespParam, error) {
+func (ctl *DHLiveManager) GetVideoCount(searchParams SearchVideoParam) (*VideoCountRespParam, error) {
 	params := ctl.Credentials.NewSignParams("getVideoCount", Version, "")
-	params["categoryID"] = strconv.Itoa(searchParams.CategoryID)
-	params["videoType"] = strconv.Itoa(searchParams.VideoType)
-	params["status"] = strconv.Itoa(searchParams.Status)
-	params["keyword"] = searchParams.Keyword
+	if searchParams.CategoryID != -1 {
+		params["categoryID"] = strconv.Itoa(searchParams.CategoryID)
+	}
+
+	if searchParams.VideoType != -1 {
+		params["videoType"] = strconv.Itoa(searchParams.VideoType)
+	}
+
+	if searchParams.Status != -1 {
+		params["status"] = strconv.Itoa(searchParams.Status)
+	}
+
+	if searchParams.Keyword != "" {
+		params["keyword"] = searchParams.Keyword
+	}
 
 	queryparam, _ := ctl.Credentials.SignExt(params)
 	url := LiveRestAPIURL + "?" + queryparam
 
-	var respTempalte VideoInfoRespParam
+	var respTempalte VideoCountRespParam
 	err := ctl.Client.CallWithJSONQuery(context.Background(),
 		&respTempalte, "GET", url, nil, nil)
 
