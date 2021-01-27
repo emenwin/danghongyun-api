@@ -150,7 +150,7 @@ type CreateOrUpdatechannelParam struct {
 	Type            string            `json:"type"`            //频道类型id
 	TypeName        string            `json:"typeName"`        //类型名称
 	OutputGroupList []CreateGroupList `json:"outputGroupList"` //输出组信息
-	FillInfo        FillInfo          `json:"fillInfo"`        // 垫片信息
+	//	FillInfo        FillInfo          `json:"fillInfo"`        // 垫片信息
 }
 
 //CreateGroupList 创建频道组
@@ -165,7 +165,7 @@ type CreateGroupList struct {
 	LogoID                  string               `json:"logoId,omitempty"`
 	Rotation                string               `json:"rotation"`   //旋转度数
 	NeedToMp4               string               `json:"needToMp4"`  //录制的文件是否转mp4，1.是 0.否
-	IsFastEdit              string               `json:"isFastEdit"` //是否快编，0.否 1.是
+	IsFastEdit              int                  `json:"isFastEdit"` //是否快编，0.否 1.是
 	OutputTemplateList      []CreateTemplateList `json:"outputTemplateList"`
 }
 
