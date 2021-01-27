@@ -430,7 +430,7 @@ func TestGetVideoInfo(t *testing.T) {
 	cred := auth.New(accessKey, accessSecret)
 
 	livemanager := video.NewLiveManager(cred)
-	videoID := "9d964565de8c4e979db44b9760c253a3"
+	videoID := "138df9c749c04f4e8292e9167b725e75"
 
 	templateRsp, err := livemanager.GetVideoInfo(videoID)
 
@@ -463,6 +463,42 @@ func TestInitMultipartUpload(t *testing.T) {
 	param.Type = "0"
 
 	templateRsp, err := livemanager.InitMultipartUpload(param)
+
+	if err != nil {
+		//t.Error("sign error ")
+		t.Errorf(err.Error())
+	}
+
+	fmt.Println(templateRsp)
+}
+
+func TestGetVideoCount(t *testing.T) {
+	accessKey := "275ee3cd-6fb"
+	accessSecret := "5GcXHNYdAVVdFW0yervG"
+
+	if TestAccessKey != "" {
+		accessKey = TestAccessKey
+		accessSecret = TestSecretKey
+	}
+
+	fmt.Println(accessKey)
+	fmt.Println(accessSecret)
+
+	cred := auth.New(accessKey, accessSecret)
+
+	livemanager := video.NewLiveManager(cred)
+	searchParams := video.SearchVideoParam{}
+	searchParams.Start = "0"
+	searchParams.Number = "10"
+	searchParams.Sort = "tag"
+	searchParams.Order = "desc"
+	searchParams.SearchType = "tag"
+	searchParams.Keyword = ""
+	searchParams.CategoryID = -1
+	searchParams.Status = -1
+	searchParams.VideoType = -1
+
+	templateRsp, err := livemanager.GetVideoCount(searchParams)
 
 	if err != nil {
 		//t.Error("sign error ")

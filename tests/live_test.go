@@ -133,7 +133,7 @@ func TestDeleteTemplate(t *testing.T) {
 
 	livemanager := live.NewLiveManager(cred)
 
-	param := live.Template{ID: "605f8dbe0cec4773b9df64cc88ce89ef,dc00bb3f3d8045449a12d9186b90df3b"}
+	param := live.Template{ID: "166e264f20a9434e9dff8771f3433966"}
 
 	templateRsp, err := livemanager.DeleteTemplates(param)
 
@@ -510,21 +510,23 @@ func TestCreateLivechannel(t *testing.T) {
 	livemanager := live.NewLiveManager(cred)
 
 	livechannel := live.CreateOrUpdatechannelParam{}
+	// livechannel.FillInfo.FileType = 1
 	rd := rand.New(rand.NewSource(time.Now().UnixNano()))
-	livechannel.Name = fmt.Sprintf("添加直播频道20200107 ---  测试 %d", rd.Intn(99999))
+	livechannel.Name = fmt.Sprintf("添加直播频道20210127 ---  测试 %d", rd.Intn(99999))
 	livechannel.SignalType = "1"
 	livechannel.LiveType = 0
+	livechannel.TypeName = "普通/300kbps/854x480"
 	templateList := []live.CreateTemplateList{
 		{
-			TemplateID: "4a8235f0ad80496b940c44e1436dff87",
+			TemplateID: "addByAuto-dcz-20181220-2",
 			IsDefault:  "0",
 		},
 	}
 	grouList := []live.CreateGroupList{
 		{
-			ProtocolType:            2,
+			ProtocolType:            1,
 			RtmpThirdPartyOutputURL: "",
-			Rotation:                "90",
+			Rotation:                "0",
 			IsRecord:                "1",
 			NeedToMp4:               "1",
 			IsTimeShift:             "0",
@@ -532,9 +534,14 @@ func TestCreateLivechannel(t *testing.T) {
 			IsLiveEncrypt:           "0",
 			LogoID:                  "5b99a7d13afd4e7eb4a52e15210982f6",
 			OutputTemplateList:      templateList,
+			IsFastEdit:              1,
 		},
 	}
 	livechannel.OutputGroupList = grouList
+	// livechannel.FillInfo.FileType = -1
+	// livechannel.FillInfo.FileID = ""
+	// livechannel.FillInfo.FileHTTPURL = ""
+	// livechannel.FillInfo.FileLocalURL = ""
 
 	templateRsp, err := livemanager.CreateLivechannel(livechannel)
 
@@ -732,7 +739,7 @@ func TestStartPullLiveChannel(t *testing.T) {
 
 	livemanager := live.NewLiveManager(cred)
 
-	id := "0f4f319ef71a4d9ea2a54a91a9d27f19"
+	id := "e08d4c124699490c92442441b360b7bb"
 	templateRsp, err := livemanager.StartPullLiveChannel(id)
 
 	if err != nil {
