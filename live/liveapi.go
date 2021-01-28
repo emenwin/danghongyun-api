@@ -449,8 +449,8 @@ func (m *DHLiveManager) CreateLivechannel(param CreateOrUpdatechannelParam) (*Li
 	liveChannel.Type = param.Type
 	liveChannel.TypeName = param.TypeName
 	liveChannel.LiveType = param.LiveType
-	// if liveChannel.FillInfo.FileType != -1 {
-	// 	liveChannel.FillInfo = param.FillInfo
+	// if param.FillInfo.FileType != -1 {
+	liveChannel.FillInfo = param.FillInfo
 	// }
 
 	liveChannel.OutputGroupList = param.OutputGroupList
@@ -482,7 +482,7 @@ func (m *DHLiveManager) EditLivechannel(param CreateOrUpdatechannelParam) (*Live
 	liveChannel.Type = param.Type
 	liveChannel.TypeName = param.TypeName
 	liveChannel.LiveType = param.LiveType
-	// liveChannel.FillInfo = param.FillInfo
+	liveChannel.FillInfo = param.FillInfo
 	liveChannel.OutputGroupList = param.OutputGroupList
 
 	err := m.Client.CallWithJSON(context.Background(),
