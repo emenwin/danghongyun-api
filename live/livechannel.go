@@ -150,7 +150,7 @@ type CreateOrUpdatechannelParam struct {
 	Type            string            `json:"type"`            //频道类型id
 	TypeName        string            `json:"typeName"`        //类型名称
 	OutputGroupList []CreateGroupList `json:"outputGroupList"` //输出组信息
-	//	FillInfo        FillInfo          `json:"fillInfo"`        // 垫片信息
+	//FillInfo        FillInfo          `json:"fillInfo"`        // 垫片信息
 }
 
 //CreateGroupList 创建频道组

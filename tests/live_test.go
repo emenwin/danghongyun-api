@@ -510,7 +510,7 @@ func TestCreateLivechannel(t *testing.T) {
 	livemanager := live.NewLiveManager(cred)
 
 	livechannel := live.CreateOrUpdatechannelParam{}
-	// livechannel.FillInfo.FileType = 1
+	livechannel.FillInfo.FileType = 1
 	rd := rand.New(rand.NewSource(time.Now().UnixNano()))
 	livechannel.Name = fmt.Sprintf("添加直播频道20210127 ---  测试 %d", rd.Intn(99999))
 	livechannel.SignalType = "1"
@@ -538,10 +538,10 @@ func TestCreateLivechannel(t *testing.T) {
 		},
 	}
 	livechannel.OutputGroupList = grouList
-	// livechannel.FillInfo.FileType = -1
-	// livechannel.FillInfo.FileID = ""
-	// livechannel.FillInfo.FileHTTPURL = ""
-	// livechannel.FillInfo.FileLocalURL = ""
+	livechannel.FillInfo.FileType = -1
+	livechannel.FillInfo.FileID = ""
+	livechannel.FillInfo.FileHTTPURL = ""
+	livechannel.FillInfo.FileLocalURL = ""
 
 	templateRsp, err := livemanager.CreateLivechannel(livechannel)
 
